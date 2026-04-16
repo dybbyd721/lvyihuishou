@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>绿益回收 · 我的地址</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #eef5e8;
+            font-family: 'Segoe UI', 'Poppins', Roboto, system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 整体容器 - 模拟手机卡片风格，与个人中心/订单页面一致 */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #f5fbf0;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部背景区 (绿色渐变) 与个人中心完全一致 */
+        .profile-header {
+            background: linear-gradient(135deg, #3c9e3a, #2c7a2a);
+            padding: 32px 24px 28px 24px;
+            border-radius: 0 0 32px 32px;
+            color: white;
+        }
+
+        .user-greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .user-greeting h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .back-home {
+            background: rgba(255,255,255,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .back-home i {
+            font-size: 1.2rem;
+        }
+
+        /* 用户信息精简 (仅显示用户名和环保金) 保持风格 */
+        .user-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .user-name-addr {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-name-addr i {
+            font-size: 1.3rem;
+        }
+        .eco-mini {
+            background: rgba(255,255,255,0.15);
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+        }
+        .eco-mini span {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* 新增地址按钮 */
+        .add-address-btn {
+            background: white;
+            margin: 16px 20px 0 20px;
+            border-radius: 60px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #3c9e3a;
+            border: 1px solid #e2f0da;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .add-address-btn i {
+            font-size: 1.1rem;
+        }
+        .add-address-btn:hover {
+            background: #f9fff5;
+            transform: translateY(-1px);
+        }
+
+        /* 地址列表容器 */
+        .address-list {
+            margin: 16px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 地址卡片 - 与订单卡片风格统一 */
+        .address-card {
+            background: white;
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2f0da;
+            transition: 0.2s;
+            position: relative;
+        }
+        .address-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .address-tag-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .address-tag {
+            background: #eef6e9;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4cae4c;
+        }
+        .address-tag.default {
+            background: #3c9e3a;
+            color: white;
+        }
+        .address-detail {
+            margin-bottom: 14px;
+        }
+        .address-contact {
+            font-weight: 700;
+            color: #2f5430;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+        .address-full {
+            font-size: 0.85rem;
+            color: #6f9a60;
+            line-height: 1.4;
+        }
+        .address-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #edf5e6;
+        }
+        .addr-action-btn {
+            background: none;
+            border: none;
+            font-size: 0.75rem;
+            color: #8fc07c;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            padding: 4px 10px;
+            border-radius: 40px;
+        }
+        .addr-action-btn:hover {
+            background: #f0f9ea;
+            color: #3c9e3a;
+        }
+        .addr-action-btn.delete-btn:hover {
+            color: #e67e22;
+        }
+
+        /* 空状态样式 */
+        .empty-address {
+            text-align: center;
+            padding: 48px 20px;
+            background: white;
+            border-radius: 32px;
+            margin: 20px;
+            color: #aacb99;
+        }
+        .empty-address i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        /* 底部tab栏 与个人中心一致 */
+        .bottom-tab-bar {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 18px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+            border-top: 1px solid #e2f0da;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: #92b282;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+        }
+        .tab-item i {
+            font-size: 1.4rem;
+        }
+        .tab-item.active {
+            color: #3c9e3a;
+            font-weight: 600;
+        }
+
+        /* 服务footer */
+        .service-footer {
+            text-align: center;
+            padding: 16px 20px 24px;
+            font-size: 0.65rem;
+            color: #9bbc89;
+            background: #f5fbf0;
+        }
+
+        /* toast */
+        .toast-msg {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* 新增地址弹窗 (模态框) 与个人中心修改信息弹窗风格一致 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-mask.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-container {
+            background: white;
+            width: 320px;
+            border-radius: 32px;
+            padding: 24px;
+            text-align: center;
+        }
+        .modal-container h3 {
+            color: #2d6a2b;
+            margin-bottom: 16px;
+        }
+        .modal-container input, .modal-container select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #cbe2bd;
+            border-radius: 60px;
+            outline: none;
+            font-size: 0.9rem;
+            background: white;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            background: #e2f0db;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-buttons button:first-child {
+            background: #4cae4c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- 头部，与个人中心风格一致 -->
+    <div class="profile-header">
+        <div class="user-greeting">
+            <h2><i class="fas fa-map-marker-alt"></i> 我的地址</h2>
+            <div class="back-home" id="backHomeBtn">
+                <i class="fas fa-home"></i>
+            </div>
+        </div>
+        <div class="user-info-row">
+            <div class="user-name-addr">
+                <i class="fas fa-user-circle"></i>
+                <span id="addrUsername">环保市民</span>
+            </div>
+            <div class="eco-mini">
+                <i class="fas fa-leaf"></i> 绿益积分 <span id="miniBalance">0.00</span> 分
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增地址按钮 -->
+    <div class="add-address-btn" id="addAddressBtn">
+        <i class="fas fa-plus-circle"></i> 新增回收地址
+    </div>
+
+    <!-- 地址列表容器 -->
+    <div id="addressListContainer" class="address-list">
+        <!-- 动态渲染地址卡片，初始为空 -->
+    </div>
+
+    <!-- 底部tab栏 -->
+    <div class="bottom-tab-bar">
+        <div class="tab-item" data-tab="home">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" data-tab="points">
+            <i class="fas fa-coins"></i>
+            <span>积分</span>
+        </div>
+        <div class="tab-item" data-tab="message">
+            <i class="fas fa-comment-dots"></i>
+            <span>消息</span>
+        </div>
+        <div class="tab-item" data-tab="profile">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <div class="service-footer">
+        本服务由常州市城市管理局 & 绿益回收平台联合提供
+    </div>
+</div>
+
+<!-- 新增/编辑地址弹窗 -->
+<div id="addressModal" class="modal-mask">
+    <div class="modal-container">
+        <h3 id="modalTitle"><i class="fas fa-plus-circle"></i> 新增地址</h3>
+        <input type="text" id="addrContact" placeholder="收货人姓名" autocomplete="off">
+        <input type="tel" id="addrPhone" placeholder="手机号码" autocomplete="off">
+        <input type="text" id="addrDetail" placeholder="详细地址（街道/门牌号）" autocomplete="off">
+        <select id="addrTag">
+            <option value="家">🏠 家</option>
+            <option value="公司">💼 公司</option>
+            <option value="回收点">♻️ 回收点</option>
+            <option value="其他">📌 其他</option>
+        </select>
+        <div style="display: flex; align-items: center; gap: 8px; margin: 12px 0 0 8px;">
+            <input type="checkbox" id="setDefaultCheckbox" style="width: 18px; margin: 0;">
+            <label style="font-size: 0.8rem; color:#2f5430;">设为默认地址</label>
+        </div>
+        <div class="modal-buttons">
+            <button id="modalConfirmAddrBtn">保存</button>
+            <button id="modalCancelAddrBtn">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----------------------------- 我的地址页面逻辑（数据全0，但支持新增地址，初始无地址）---------------------------------
+    // 用户信息（与个人中心同步，环保金余额为0）
+    let currentUser = {
+        username: "环保市民",
+        balance: 0.00
+    };
+
+    // 地址数组 (初始为空，完全符合“数据都改成0”要求)
+    let addresses = [];
+
+    // 当前编辑的地址ID（用于编辑，null表示新增模式）
+    let editingId = null;
+
+    // 更新头部用户信息
+    function updateUserInfo() {
+        const usernameSpan = document.getElementById('addrUsername');
+        if(usernameSpan) usernameSpan.innerText = currentUser.username;
+        const miniBalanceSpan = document.getElementById('miniBalance');
+        if(miniBalanceSpan) miniBalanceSpan.innerText = currentUser.balance.toFixed(2);
+    }
+
+    // 渲染地址列表
+    function renderAddresses() {
+        const container = document.getElementById('addressListContainer');
+        if (!container) return;
+
+        if (addresses.length === 0) {
+            container.innerHTML = `
+                <div class="empty-address">
+                    <i class="fas fa-location-dot"></i>
+                    <p>暂无保存地址</p>
+                    <span style="font-size: 12px;">点击「新增回收地址」添加上门取件点</span>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = addresses.map(addr => `
+            <div class="address-card" data-id="${addr.id}">
+                <div class="address-tag-row">
+                    <span class="address-tag ${addr.isDefault ? 'default' : ''}">${addr.tag}</span>
+                    ${addr.isDefault ? '<span class="address-tag default" style="background:#e68a2e;">默认地址</span>' : ''}
+                </div>
+                <div class="address-detail">
+                    <div class="address-contact">${escapeHtml(addr.contact)} ${addr.phone ? '· ' + maskPhone(addr.phone) : ''}</div>
+                    <div class="address-full">${escapeHtml(addr.detail)}</div>
+                </div>
+                <div class="address-actions">
+                    <button class="addr-action-btn edit-addr" data-id="${addr.id}"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="addr-action-btn delete-btn" data-id="${addr.id}"><i class="fas fa-trash-alt"></i> 删除</button>
+                    ${!addr.isDefault ? '<button class="addr-action-btn set-default-btn" data-id="'+addr.id+'"><i class="fas fa-check-circle"></i> 设为默认</button>' : ''}
+                </div>
+            </div>
+        `).join('');
+
+        // 绑定按钮事件
+        document.querySelectorAll('.edit-addr').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.getAttribute('data-id'));
+                openEditModal(id);
+            });
+        });
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.getAttribute('data-id'));
+                deleteAddressById(id);
+            });
+        });
+        document.querySelectorAll('.set-default-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.getAttribute('data-id'));
+                setDefaultAddress(id);
+            });
+        });
+    }
+
+    // 辅助：手机号掩码
+    function maskPhone(phone) {
+        if(!phone) return '';
+        let str = String(phone);
+        if(str.length >= 11) return str.slice(0,3) + '****' + str.slice(-4);
+        return str;
+    }
+
+    // 简单的防XSS
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // 新增地址弹窗
+    const modal = document.getElementById('addressModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const addrContact = document.getElementById('addrContact');
+    const addrPhone = document.getElementById('addrPhone');
+    const addrDetail = document.getElementById('addrDetail');
+    const addrTag = document.getElementById('addrTag');
+    const setDefaultCheckbox = document.getElementById('setDefaultCheckbox');
+    const confirmBtn = document.getElementById('modalConfirmAddrBtn');
+    const cancelBtn = document.getElementById('modalCancelAddrBtn');
+
+    function openAddModal() {
+        editingId = null;
+        modalTitle.innerHTML = '<i class="fas fa-plus-circle"></i> 新增地址';
+        addrContact.value = '';
+        addrPhone.value = '';
+        addrDetail.value = '';
+        addrTag.value = '家';
+        setDefaultCheckbox.checked = false;
+        modal.classList.add('show');
+    }
+
+    function openEditModal(id) {
+        const addr = addresses.find(a => a.id === id);
+        if(!addr) return;
+        editingId = id;
+        modalTitle.innerHTML = '<i class="fas fa-edit"></i> 编辑地址';
+        addrContact.value = addr.contact;
+        addrPhone.value = addr.phone;
+        addrDetail.value = addr.detail;
+        addrTag.value = addr.tag;
+        setDefaultCheckbox.checked = addr.isDefault;
+        modal.classList.add('show');
+    }
+
+    function closeModal() {
+        modal.classList.remove('show');
+        editingId = null;
+    }
+
+    // 保存地址（新增或编辑）
+    function saveAddress() {
+        let contact = addrContact.value.trim();
+        let phone = addrPhone.value.trim();
+        let detail = addrDetail.value.trim();
+        let tag = addrTag.value;
+        let isDefault = setDefaultCheckbox.checked;
+
+        if(!contact) { showToast("请填写联系人姓名"); return; }
+        if(!detail) { showToast("请填写详细地址"); return; }
+
+        if(editingId !== null) {
+            // 编辑模式
+            const index = addresses.findIndex(a => a.id === editingId);
+            if(index !== -1) {
+                // 如果当前编辑的地址设置为默认，则取消其他默认
+                if(isDefault) {
+                    addresses.forEach(a => a.isDefault = false);
+                }
+                addresses[index] = {
+                    ...addresses[index],
+                    contact, phone, detail, tag, isDefault
+                };
+                showToast("地址已更新");
+            }
+        } else {
+            // 新增模式
+            let newId = Date.now();
+            if(isDefault) {
+                addresses.forEach(a => a.isDefault = false);
+            }
+            addresses.push({
+                id: newId,
+                contact: contact,
+                phone: phone,
+                detail: detail,
+                tag: tag,
+                isDefault: isDefault
+            });
+            showToast("地址添加成功");
+        }
+        closeModal();
+        renderAddresses();
+    }
+
+    // 删除地址
+    function deleteAddressById(id) {
+        if(confirm("确定要删除该地址吗？")) {
+            addresses = addresses.filter(a => a.id !== id);
+            // 如果删除的是默认地址且还有其他地址，将第一个设为默认
+            if(addresses.length > 0 && !addresses.some(a => a.isDefault)) {
+                addresses[0].isDefault = true;
+            }
+            renderAddresses();
+            showToast("地址已删除");
+        }
+    }
+
+    // 设为默认地址
+    function setDefaultAddress(id) {
+        addresses.forEach(addr => {
+            addr.isDefault = (addr.id === id);
+        });
+        renderAddresses();
+        showToast("默认地址已更新");
+    }
+
+    // 加载用户数据（绿益积分0，用户名固定）
+    function loadUserData() {
+        currentUser = {
+            username: "环保市民",
+            balance: 0.00
+        };
+        updateUserInfo();
+    }
+
+    // 初始化地址（空数组，完全符合0数据）
+    function loadAddresses() {
+        addresses = [];
+        renderAddresses();
+    }
+
+    // toast提示
+    function showToast(msg) {
+        let toast = document.createElement('div');
+        toast.className = 'toast-msg';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1800);
+    }
+
+    // 底部导航（模拟）
+    function initBottomNav() {
+        const bottomTabs = document.querySelectorAll('.tab-item');
+        bottomTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                if(tabName === 'home') {
+                    showToast("首页");
+                    window.location.href = "home.html";
+                } else if(tabName === 'points') {
+                    showToast("积分商城建设中，当前积分0");
+                } else if(tabName === 'message') {
+                    showToast("暂无新消息");
+                } else if(tabName === 'profile') {
+                    showToast("返回个人中心");
+                    setTimeout(() => window.history.back(), 300);
+                }
+            });
+        });
+    }
+
+    // 返回上一级
+    const backHomeBtn = document.getElementById('backHomeBtn');
+    if(backHomeBtn) {
+        backHomeBtn.addEventListener('click', () => {
+            showToast("返回个人中心");
+            setTimeout(() => window.history.back(), 200);
+        });
+    }
+
+    // 新增按钮
+    const addBtn = document.getElementById('addAddressBtn');
+    if(addBtn) {
+        addBtn.addEventListener('click', openAddModal);
+    }
+
+    // 模态框按钮
+    confirmBtn.addEventListener('click', saveAddress);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // 初始化页面
+    function init() {
+        loadUserData();
+        loadAddresses();    // 地址数组为空，展示空状态
+        initBottomNav();
+    }
+
+    init();
+    console.log("我的地址页面 | 绿益回收风格 | 初始地址数量0，绿益积分0");
+</script>
+</body>
+</html>

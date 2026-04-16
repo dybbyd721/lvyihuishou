@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>预约回收</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: system-ui, sans-serif;
+        }
+        body {
+          padding: 20px;
+        }
+        .title {
+          font-size: 20px;
+          font-weight: bold;
+          text-align: center;
+          margin-bottom: 24px;
+        }
+        .form-item {
+          margin-bottom: 16px;
+        }
+        label {
+          display: block;
+          margin-bottom: 6px;
+          color: #333;
+        }
+        input, select, textarea {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 15px;
+        }
+        .station-item {
+          padding: 12px;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          margin-bottom: 10px;
+        }
+        .station-item p {
+          margin: 4px 0;
+        }
+        .btn {
+          width: 100%;
+          padding: 12px;
+          background: #22c55e;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          margin-top: 10px;
+          font-size: 16px;
+          cursor: pointer;
+        }
+        .btn-back {
+          background: #888;
+          margin-top: 8px;
+        }
+        #orderPreview {
+          margin: 20px 0;
+          padding: 16px;
+          background: #f7f7f7;
+          border-radius: 10px;
+          line-height: 1.7;
+          white-space: pre-line;
+          display: none;
+        }
+        #confirmBtn {
+          display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="title">预约回收</div>
+
+<div class="form-item">
+    <label>废品种类</label>
+    <select id="wasteType">
+        <option>废纸类</option>
+        <option>塑料类</option>
+        <option>金属类</option>
+        <option>玻璃类</option>
+        <option>旧家电</option>
+        <option>其他废品</option>
+    </select>
+</div>
+
+<div class="form-item">
+    <label>大致重量（kg）</label>
+    <input type="number" id="weight" placeholder="请输入大致重量">
+</div>
+
+<div class="form-item">
+    <label>是否需要上门回收</label>
+    <select id="needHome">
+        <option value="yes">需要上门</option>
+        <option value="no">自行送到站点</option>
+    </select>
+</div>
+
+<div class="form-item" id="addressBox">
+    <label>上门详细地址</label>
+    <textarea id="address" placeholder="请输入省市区街道门牌号"></textarea>
+</div>
+
+<div id="stationBox" style="display: none;">
+    <label>附近回收站点</label>
+    <div class="station-item">
+        <p>站点：城区东回收点</p>
+        <p>负责人：王师傅</p>
+        <p>联系电话：13800138001</p>
+    </div>
+    <div class="station-item">
+        <p>站点：城区西回收站</p>
+        <p>负责人：李师傅</p>
+        <p>联系电话：13900139002</p>
+    </div>
+</div>
+
+<div class="form-item">
+    <label>预约回收时间</label>
+    <input type="datetime-local" id="orderTime">
+</div>
+
+<button class="btn" onclick="showOrder()">预览订单信息</button>
+<div id="orderPreview"></div>
+
+<button class="btn" id="confirmBtn" onclick="submitOrder()">确认提交并返回主页</button>
+<button class="btn btn-back" onclick="history.back()">返回上一页</button>
+
+<script>
+    const needHome = document.getElementById('needHome');
+    const addressBox = document.getElementById('addressBox');
+    const stationBox = document.getElementById('stationBox');
+
+    needHome.addEventListener('change', function () {
+      if (this.value === 'yes') {
+        addressBox.style.display = 'block';
+        stationBox.style.display = 'none';
+      } else {
+        addressBox.style.display = 'none';
+        stationBox.style.display = 'block';
+      }
+    });
+
+    function showOrder() {
+      const type = document.getElementById('wasteType').value;
+      const weight = document.getElementById('weight').value;
+      const home = needHome.value;
+      const addr = document.getElementById('address').value;
+      const time = document.getElementById('orderTime').value;
+
+      let str = "【预约订单】\n";
+      str += "废品类型：" + type + "\n";
+      str += "大致重量：" + weight + " kg\n";
+      str += "上门服务：" + (home === "yes" ? "是" : "否") + "\n";
+      if (home === "yes") str += "上门地址：" + addr + "\n";
+      str += "预约时间：" + time;
+
+      const preview = document.getElementById('orderPreview');
+      preview.innerText = str;
+      preview.style.display = "block";
+      document.getElementById('confirmBtn').style.display = "block";
+    }
+
+    function submitOrder() {
+  const type = document.getElementById('wasteType').value;
+  const weight = document.getElementById('weight').value;
+  const needHome = document.getElementById('needHome').value === 'yes';
+  const address = document.getElementById('address').value;
+  const time = document.getElementById('orderTime').value;
+
+  // 构造订单
+  const order = {
+    type,
+    weight,
+    needHome,
+    address: needHome ? address : '',
+    time,
+    status: 'pending'   // 默认为待回收
+  };
+
+  // 保存到本地
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  orders.unshift(order);
+  localStorage.setItem('orders', JSON.stringify(orders));
+
+  alert('预约成功');
+  location.href = 'home.html';
+}
+
+    window.onload = function() {
+        checkLogin();
+        }
+        function checkLogin(){
+        const isLogin = localStorage.getItem('isLogin');
+        if (!isLogin) {
+            alert("请先登录！");
+            window.location.href = "login.html";
+        }
+    }
+</script>
+
+</body>
+</html>

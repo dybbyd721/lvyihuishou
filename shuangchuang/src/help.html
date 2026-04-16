@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>问题投诉 - 绿益回收</title>
+    <style>
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:"Microsoft YaHei",sans-serif;
+        }
+        body{
+        background:#f5f7fa;
+        padding:15px;
+        line-height:1.7;
+        }
+        .container{
+        max-width:600px;
+        margin:0 auto;
+        }
+        .title{
+        font-size:20px;
+        font-weight:bold;
+        color:#333;
+        margin-bottom:20px;
+        text-align:center;
+        }
+        .question-item{
+        background:#fff;
+        border-radius:10px;
+        margin-bottom:10px;
+        overflow:hidden;
+        box-shadow:0 1px 4px rgba(0,0,0,0.05);
+        }
+        .question{
+        padding:14px 18px;
+        font-size:15px;
+        color:#333;
+        font-weight:500;
+        cursor:pointer;
+        position:relative;
+        }
+        .question::after{
+        content:"+";
+        position:absolute;
+        right:16px;
+        top:14px;
+        font-size:18px;
+        color:#666;
+        }
+        .question.active::after{
+        content:"−";
+        }
+        .answer{
+        padding:0 18px;
+        max-height:0;
+        overflow:hidden;
+        transition:max-height 0.3s ease;
+        font-size:14px;
+        color:#555;
+        background:#fcfcfc;
+        }
+        .answer.show{
+        padding:0 18px 15px;
+        max-height:500px;
+        }
+        .feedback-box{
+        margin-top:30px;
+        background:#fff;
+        border-radius:10px;
+        padding:15px;
+        box-shadow:0 1px 4px rgba(0,0,0,0.05);
+        }
+        .feedback-title{
+        font-size:15px;
+        margin-bottom:10px;
+        color:#333;
+        font-weight:bold;
+        }
+        textarea{
+        width:100%;
+        height:100px;
+        border:1px solid #eee;
+        border-radius:8px;
+        padding:12px;
+        font-size:14px;
+        resize:none;
+        outline:none;
+        margin-bottom:10px;
+        }
+        .btn-group{
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        }
+        .submit-btn{
+        flex: 1;
+        background:#22c55e;
+        color:#fff;
+        border:none;
+        border-radius:8px;
+        padding:12px;
+        font-size:15px;
+        cursor:pointer;
+        }
+        .kf-btn{
+        flex: 1;
+        background:#1377EB;
+        color:#fff;
+        border:none;
+        border-radius:8px;
+        padding:12px;
+        font-size:15px;
+        cursor:pointer;
+        }
+        .back-btn{
+        margin-top:10px;
+        background:#666;
+        color:#fff;
+        border:none;
+        border-radius:8px;
+        padding:12px;
+        font-size:15px;
+        width:100%;
+        cursor:pointer;
+        }
+        .toast{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        background: rgba(0,0,0,0.75);
+        color: #fff;
+        padding: 14px 22px;
+        border-radius: 8px;
+        font-size:14px;
+        display: none;
+        z-index: 999;
+        text-align: center;
+        line-height:1.4;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="title">问题投诉 & 帮助中心</div>
+
+    <div class="question-item">
+        <div class="question">1. 上门回收如何预约？</div>
+        <div class="answer">打开绿益回收小程序，选择“上门回收”，填写品类、地址、预约时间即可，回收人员会按时上门。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">2. 回收价格是如何计算的？</div>
+        <div class="answer">按实际称重结算，不同品类单价不同，分类越干净价格越高，具体以现场核验为准。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">3. 预约后回收员迟到怎么办？</div>
+        <div class="answer">可在订单页查看回收员实时位置与电话，也可联系人工客服催促或改约时间。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">4. 哪些废品不支持回收？</div>
+        <div class="answer">油污严重的纸塑、陶瓷、灯管、电池、医疗垃圾、压力罐、化学品容器等不支持回收。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">5. 收益如何提现？</div>
+        <div class="answer">回收完成后收益自动到账，可在“我的钱包”中申请提现，一般1-3个工作日到账。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">6. 可以取消预约订单吗？</div>
+        <div class="answer">未上门前可在订单列表直接取消；若已上门需与回收员沟通后取消，频繁取消可能影响预约资格。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">7. 站点回收的营业时间是什么？</div>
+        <div class="answer">各站点时间不同，可在小程序“回收站点”页面查看对应地址与营业时间，多数为早8点至晚8点。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">8. 旧家电需要自己拆解吗？</div>
+        <div class="answer">不需要。空调、冰箱等制冷设备禁止自行拆解，由专业回收员统一处理，更安全。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">9. 废品称重不准怎么办？</div>
+        <div class="answer">现场可要求复称，如仍有异议可拍照留证，联系人工客服申请复核处理。</div>
+    </div>
+
+    <div class="question-item">
+        <div class="question">10. 如何修改绑定手机号？</div>
+        <div class="answer">进入“我的-设置-账号安全”，选择修改手机号，按提示完成验证即可更新。</div>
+    </div>
+
+    <div class="feedback-box">
+        <div class="feedback-title">未解决问题？</div>
+        <textarea placeholder="请描述你遇到的问题..."></textarea>
+        <div class="btn-group">
+            <button class="submit-btn" onclick="submitProblem()">提交问题</button>
+            <button class="kf-btn" onclick="location.href='我的客服.html'">人工客服</button>
+        </div>
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='home.html'">返回首页</button>
+
+</div>
+
+<script>
+    const qs = document.querySelectorAll('.question');
+    qs.forEach(q => {
+    q.addEventListener('click', () => {
+    q.classList.toggle('active');
+    const ans = q.nextElementSibling;
+    ans.classList.toggle('show');
+    });
+    });
+
+    function submitProblem() {
+    let text = document.querySelector('textarea').value.trim();
+    let toast = document.getElementById('toast');
+
+    if (!text) {
+    toast.textContent = "请输入您遇到的问题哦~";
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 2000);
+    return;
+    }
+
+    toast.textContent = "您的问题已提交成功，我们会尽快核实处理，感谢您的理解与耐心等待！";
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3500);
+    document.querySelector('textarea').value = '';
+    }
+</script>
+
+</body>
+</html>
