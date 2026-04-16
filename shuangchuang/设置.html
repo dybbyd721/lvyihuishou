@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>绿益回收 · 设置</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #eef5e8;
+            font-family: 'Segoe UI', 'Poppins', Roboto, system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 整体容器 - 模拟手机卡片风格，与个人中心/订单/地址页面一致 */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #f5fbf0;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部背景区 (绿色渐变) 与个人中心完全一致 */
+        .profile-header {
+            background: linear-gradient(135deg, #3c9e3a, #2c7a2a);
+            padding: 32px 24px 28px 24px;
+            border-radius: 0 0 32px 32px;
+            color: white;
+        }
+
+        .user-greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .user-greeting h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .back-home {
+            background: rgba(255,255,255,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .back-home i {
+            font-size: 1.2rem;
+        }
+
+        /* 用户信息精简 (仅显示用户名和环保金) 保持风格 */
+        .user-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .user-name-setting {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-name-setting i {
+            font-size: 1.3rem;
+        }
+        .eco-mini {
+            background: rgba(255,255,255,0.15);
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+        }
+        .eco-mini span {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* 设置列表容器 */
+        .settings-list {
+            margin: 20px 20px 20px;
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2f0da;
+        }
+
+        /* 设置项 */
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid #edf5e6;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-item:hover {
+            background-color: #f9fff5;
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .setting-icon {
+            width: 32px;
+            font-size: 1.3rem;
+            color: #4cae4c;
+            text-align: center;
+        }
+        .setting-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2f5430;
+        }
+        .setting-sub {
+            font-size: 0.7rem;
+            color: #9bbc89;
+            margin-top: 2px;
+        }
+
+        /* 开关样式 (与之前个人中心风格一致) */
+        .switch {
+            width: 48px;
+            height: 26px;
+            background: #c2ddb4;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .switch.active {
+            background: #4cae4c;
+        }
+        .switch:after {
+            content: "";
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .switch.active:after {
+            left: 23px;
+        }
+
+        /* 右侧箭头 (用于跳转类设置) */
+        .arrow-right {
+            color: #bdd6ae;
+            font-size: 0.9rem;
+        }
+
+        /* 退出登录按钮独立卡片 */
+        .logout-wrapper {
+            margin: 8px 20px 20px;
+        }
+        .logout-btn {
+            background: white;
+            border-radius: 60px;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #e67e22;
+            border: 1px solid #f0ded0;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .logout-btn:hover {
+            background: #fff5ef;
+        }
+
+        /* 底部tab栏 与个人中心一致 */
+        .bottom-tab-bar {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 18px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+            border-top: 1px solid #e2f0da;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: #92b282;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+        }
+        .tab-item i {
+            font-size: 1.4rem;
+        }
+        .tab-item.active {
+            color: #3c9e3a;
+            font-weight: 600;
+        }
+
+        /* 服务footer */
+        .service-footer {
+            text-align: center;
+            padding: 16px 20px 24px;
+            font-size: 0.65rem;
+            color: #9bbc89;
+            background: #f5fbf0;
+        }
+
+        /* toast */
+        .toast-msg {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* 模态框 (用于账号安全等简单弹窗) */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-mask.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-container {
+            background: white;
+            width: 280px;
+            border-radius: 32px;
+            padding: 24px;
+            text-align: center;
+        }
+        .modal-container h3 {
+            color: #2d6a2b;
+            margin-bottom: 12px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            background: #e2f0db;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-buttons button:first-child {
+            background: #4cae4c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- 头部，与个人中心风格一致 -->
+    <div class="profile-header">
+        <div class="user-greeting">
+            <h2><i class="fas fa-sliders-h"></i> 设置</h2>
+            <div class="back-home" id="backHomeBtn">
+                <i class="fas fa-home"></i>
+            </div>
+        </div>
+        <div class="user-info-row">
+            <div class="user-name-setting">
+                <i class="fas fa-user-circle"></i>
+                <span id="settingUsername">环保市民</span>
+            </div>
+            <div class="eco-mini">
+                <i class="fas fa-leaf"></i> 绿益积分 <span id="miniBalance">0.00</span> 分
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置列表 -->
+    <div class="settings-list">
+        <!-- 消息推送提醒 (开关) -->
+        <div class="setting-item" id="notifySetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-bell"></i></div>
+                <div>
+                    <div class="setting-title">消息推送提醒</div>
+                    <div class="setting-sub">订单状态、回收通知</div>
+                </div>
+            </div>
+            <div class="switch active" id="notifyToggle"></div>
+        </div>
+
+        <!-- 隐私保护模式 (开关) -->
+        <div class="setting-item" id="privacySetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-lock"></i></div>
+                <div>
+                    <div class="setting-title">隐私保护模式</div>
+                    <div class="setting-sub">隐藏订单部分信息</div>
+                </div>
+            </div>
+            <div class="switch" id="privacyToggle"></div>
+        </div>
+
+        <!-- 智能语音助手 (开关) -->
+        <div class="setting-item" id="voiceSetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-microphone-alt"></i></div>
+                <div>
+                    <div class="setting-title">智能语音助手</div>
+                    <div class="setting-sub">AI语音交互回收指导</div>
+                </div>
+            </div>
+            <div class="switch active" id="voiceToggle"></div>
+        </div>
+
+        <!-- 账号安全与隐私设置 (跳转详情) -->
+        <div class="setting-item" id="accountSecuritySetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                    <div class="setting-title">账号安全与隐私设置</div>
+                    <div class="setting-sub">修改密码、绑定手机</div>
+                </div>
+            </div>
+            <div class="arrow-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <!-- 清理缓存 -->
+        <div class="setting-item" id="clearCacheSetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-trash-alt"></i></div>
+                <div>
+                    <div class="setting-title">清理缓存</div>
+                    <div class="setting-sub">当前缓存 0KB</div>
+                </div>
+            </div>
+            <div class="arrow-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+
+        <!-- 关于我们 (跳转) -->
+        <div class="setting-item" id="aboutSetting">
+            <div class="setting-left">
+                <div class="setting-icon"><i class="fas fa-info-circle"></i></div>
+                <div>
+                    <div class="setting-title">关于我们</div>
+                    <div class="setting-sub">版本 2.0.0 · 常州市城市管理局合作</div>
+                </div>
+            </div>
+            <div class="arrow-right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+    </div>
+
+    <!-- 退出登录按钮 -->
+    <div class="logout-wrapper">
+        <div class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> 退出登录
+        </div>
+    </div>
+
+    <!-- 底部tab栏 -->
+    <div class="bottom-tab-bar">
+        <div class="tab-item" data-tab="home">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" data-tab="points">
+            <i class="fas fa-coins"></i>
+            <span>积分</span>
+        </div>
+        <div class="tab-item" data-tab="message">
+            <i class="fas fa-comment-dots"></i>
+            <span>消息</span>
+        </div>
+        <div class="tab-item" data-tab="profile">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <div class="service-footer">
+        本服务由常州市城市管理局 & 绿益回收平台联合提供
+    </div>
+</div>
+
+<!-- 简单提示弹窗（用于账号安全等） -->
+<div id="infoModal" class="modal-mask">
+    <div class="modal-container">
+        <h3 id="modalTitle">提示</h3>
+        <p id="modalMessage" style="margin: 16px 0; color: #4f6b3c;">功能开发中</p>
+        <div class="modal-buttons">
+            <button id="modalConfirmBtn">知道了</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----------------------------- 设置页面逻辑（风格统一，数据归零）---------------------------------
+    // 用户信息（环保金余额为0）
+    let currentUser = {
+        username: "环保市民",
+        balance: 0.00
+    };
+
+    // 开关状态
+    let notifyEnabled = true;
+    let privacyEnabled = false;
+    let voiceEnabled = true;
+
+    // 更新头部用户信息
+    function updateUserInfo() {
+        const usernameSpan = document.getElementById('settingUsername');
+        if(usernameSpan) usernameSpan.innerText = currentUser.username;
+        const miniBalanceSpan = document.getElementById('miniBalance');
+        if(miniBalanceSpan) miniBalanceSpan.innerText = currentUser.balance.toFixed(2);
+    }
+
+    // 加载用户数据
+    function loadUserData() {
+        currentUser = {
+            username: "环保市民",
+            balance: 0.00
+        };
+        updateUserInfo();
+    }
+
+    // 初始化开关UI
+    function initSwitches() {
+        const notifyToggle = document.getElementById('notifyToggle');
+        const privacyToggle = document.getElementById('privacyToggle');
+        const voiceToggle = document.getElementById('voiceToggle');
+
+        if(notifyEnabled) notifyToggle.classList.add('active');
+        else notifyToggle.classList.remove('active');
+        if(privacyEnabled) privacyToggle.classList.add('active');
+        else privacyToggle.classList.remove('active');
+        if(voiceEnabled) voiceToggle.classList.add('active');
+        else voiceToggle.classList.remove('active');
+
+        // 绑定点击事件
+        notifyToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notifyEnabled = !notifyEnabled;
+            if(notifyEnabled) notifyToggle.classList.add('active');
+            else notifyToggle.classList.remove('active');
+            showToast(`消息推送${notifyEnabled ? '已开启' : '已关闭'}`);
+        });
+
+        privacyToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            privacyEnabled = !privacyEnabled;
+            if(privacyEnabled) privacyToggle.classList.add('active');
+            else privacyToggle.classList.remove('active');
+            showToast(`隐私保护模式${privacyEnabled ? '已开启' : '已关闭'}`);
+        });
+
+        voiceToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            voiceEnabled = !voiceEnabled;
+            if(voiceEnabled) voiceToggle.classList.add('active');
+            else voiceToggle.classList.remove('active');
+            showToast(`智能语音助手${voiceEnabled ? '已开启' : '已关闭'}`);
+        });
+    }
+
+    // 模态框管理
+    const modal = document.getElementById('infoModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+
+    function showModal(title, message) {
+        modalTitle.innerText = title;
+        modalMessage.innerText = message;
+        modal.classList.add('show');
+    }
+
+    function closeModal() {
+        modal.classList.remove('show');
+    }
+
+    modalConfirmBtn.addEventListener('click', closeModal);
+
+    // 点击模态框背景关闭
+    modal.addEventListener('click', (e) => {
+        if(e.target === modal) closeModal();
+    });
+
+    // 设置项点击处理
+    function initSettingActions() {
+        // 账号安全与隐私设置
+        const accountSecurity = document.getElementById('accountSecuritySetting');
+        if(accountSecurity) {
+            accountSecurity.addEventListener('click', () => {
+                showModal("账号安全", "修改密码、绑定手机号等功能即将开放，当前为演示环境。");
+            });
+        }
+
+        // 清理缓存
+        const clearCache = document.getElementById('clearCacheSetting');
+        if(clearCache) {
+            clearCache.addEventListener('click', () => {
+                showModal("清理缓存", "当前缓存0KB，无需清理。");
+            });
+        }
+
+        // 关于我们
+        const aboutSetting = document.getElementById('aboutSetting');
+        if(aboutSetting) {
+            aboutSetting.addEventListener('click', () => {
+                showModal("关于我们", "绿益回收 · 基于AI识别的绿色回收平台\n版本 2.0.0\n合作单位：常州市城市管理局\n© 2025 绿益回收");
+            });
+        }
+    }
+
+    // 退出登录
+    function initLogout() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if(confirm("确定退出当前账号吗？")) {
+                    showToast("您已退出登录 (演示环境)");
+                    setTimeout(() => {
+                        // 模拟退出，刷新回到个人中心首页（实际可跳转）
+                        window.location.href = "login.html";
+                        showToast("请重新登录");
+                    }, 500);
+                }
+            });
+        }
+    }
+
+    // 底部导航（模拟）
+    function initBottomNav() {
+        const bottomTabs = document.querySelectorAll('.tab-item');
+        bottomTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                if(tabName === 'home') {
+                    showToast("首页");
+                    window.location.href = "index.html";
+                } else if(tabName === 'points') {
+                    showToast("积分商城建设中，当前积分0");
+                } else if(tabName === 'message') {
+                    showToast("暂无新消息");
+                } else if(tabName === 'profile') {
+                    showToast("返回个人中心");
+                    setTimeout(() => window.history.back(), 300);
+                }
+            });
+        });
+    }
+
+    // 返回上一级
+    const backHomeBtn = document.getElementById('backHomeBtn');
+    if(backHomeBtn) {
+        backHomeBtn.addEventListener('click', () => {
+            showToast("返回个人中心");
+            setTimeout(() => window.history.back(), 200);
+        });
+    }
+
+    // toast提示
+    function showToast(msg) {
+        let toast = document.createElement('div');
+        toast.className = 'toast-msg';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1800);
+    }
+
+    // 初始化页面
+    function init() {
+        loadUserData();
+        initSwitches();
+        initSettingActions();
+        initLogout();
+        initBottomNav();
+    }
+
+    init();
+    console.log("设置页面 | 绿益回收风格 | 绿益积分0 | 开关默认状态已加载");
+</script>
+</body>
+</html>
