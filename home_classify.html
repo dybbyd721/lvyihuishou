@@ -168,16 +168,6 @@
     </div>
 </div>
 
-window.onload = function() {
-checkLogin();
-}
-function checkLogin(){
-const isLogin = localStorage.getItem('isLogin');
-if (!isLogin) {
-alert("请先登录！");
-window.location.href = "login.html";
-}
-}
 <!-- 两侧随机环保小知识 -->
 <style>
     .env-bubble {
