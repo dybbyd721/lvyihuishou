@@ -87,5 +87,103 @@
         }
     }
 </script>
+<!-- 两侧随机环保小知识 -->
+<style>
+    .env-bubble {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 180px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0, 120, 60, 0.12);
+      z-index: 9999;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #2d5c32;
+      animation: envFadeIn 0.5s ease;
+    }
+    .env-left {
+      left: 10px;
+      border-left: 4px solid #52c41a;
+    }
+    .env-right {
+      right: 10px;
+      border-right: 4px solid #52c41a;
+    }
+    .env-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      font-size: 12px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #666;
+    }
+    .env-close:hover {
+      background: #52c41a;
+      color: #fff;
+    }
+    @keyframes envFadeIn {
+      from { opacity: 0; transform: translateY(-50%) scale(0.9); }
+      to { opacity: 1; transform: translateY(-50%) scale(1); }
+    }
+    @media (max-width: 1024px) {
+      .env-bubble { display: none; }
+    }
+</style>
+
+<div class="env-bubble env-left" id="envLeft">
+    <div class="env-close" onclick="closeEnv('envLeft')">×</div>
+    <div id="envTextLeft"></div>
+</div>
+
+<div class="env-bubble env-right" id="envRight">
+    <div class="env-close" onclick="closeEnv('envRight')">×</div>
+    <div id="envTextRight"></div>
+</div>
+
+<script>
+    // 环保文案库，可自行增删
+    const envTexts = [
+      "回收1吨废纸可再造850公斤好纸，少砍17棵大树。",
+      "随手关灯，每年可节约大量电能，减少碳排放。",
+      "垃圾分类投放，让资源循环，让城市更美丽。",
+      "节约用水，点滴汇聚，保护珍贵水资源。",
+      "少用一次性塑料袋，多用环保布袋。",
+      "废旧电池不乱扔，集中回收防污染。",
+      "绿色出行多步行、骑行，低碳又健康。",
+      "节约纸张双面打印，为森林减负。",
+      "闲置物品可回收捐赠，变废为宝更环保。",
+      "减少使用一次性餐具，守护绿色家园。"
+    ];
+
+    // 随机获取一条不重复文案
+    function getRandomText(used) {
+      let available = envTexts.filter(t => !used.includes(t));
+      if (available.length === 0) available = envTexts;
+      const randomIndex = Math.floor(Math.random() * available.length);
+      return available[randomIndex];
+    }
+
+    // 显示两侧随机文案
+    window.onload = function() {
+      const t1 = getRandomText([]);
+      const t2 = getRandomText([t1]);
+      document.getElementById('envTextLeft').innerHTML = `<strong>环保小知识</strong><br>${t1}`;
+      document.getElementById('envTextRight').innerHTML = `<strong>绿益回收</strong><br>${t2}`;
+    };
+
+    // 关闭
+    function closeEnv(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+</script>
 </body>
 </html>
