@@ -649,7 +649,8 @@
                 showToast("首页");
                 window.location.href = "index.html";
             } else if(tabName === 'points') {
-                showToast("积分商城建设中，当前积分0");
+                showToast("积分商城");
+                window.location.href = "积分商城.html";
             } else if(tabName === 'message') {
                 showToast("暂无新消息");
             } else if(tabName === 'profile') {
@@ -671,6 +672,7 @@
     if(pointsCard) {
         pointsCard.addEventListener('click', () => {
             showToast(`当前可用积分：${userData.points} 分，完成回收即可获得积分`);
+            window.location.href = "积分商城.html";
         });
     }
 

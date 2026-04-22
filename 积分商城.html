@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绿益回收 - 积分平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #E6F7E9;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+        .mobile-wrapper {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: #E6F7E9;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .page-content {
+            padding-bottom: 80px;
+        }
+        .top {
+            background-color: #279E48;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            position: relative;
+        }
+        .back-arrow {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        /* 顶部三个导航 */
+        .top-nav {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .top-nav .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        .top-nav .nav-item.active {
+            color: #279E48;
+            font-weight: bold;
+            border-bottom: 2px solid #279E48;
+        }
+        .card {
+            background: white;
+            margin: 12px;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title::before {
+            content: "";
+            width: 4px;
+            height: 18px;
+            background: #279E48;
+            border-radius: 2px;
+        }
+        .score-num {
+            font-size: 46px;
+            font-weight: bold;
+            color: #279E48;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .score-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .rule-box {
+            background: #f1f9f3;
+            padding: 12px;
+            border-radius: 8px;
+            color: #279E48;
+            font-size: 14px;
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        .sign-card {
+            background: white;
+            margin: 0 12px 12px;
+            border-radius: 14px;
+            padding: 18px;
+        }
+        .sign-days {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        .day-item {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #E6F7E9;
+            color: #279E48;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .day-item.checked {
+            background: #279E48;
+            color: white;
+        }
+        .sign-btn {
+            background-color: #279E48;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .task-icon {
+            width: 42px;
+            height: 42px;
+            background: #E6F7E9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #279E48;
+            font-size: 20px;
+        }
+        .task-btn {
+            background: #E6F7E9;
+            color: #279E48;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .hot-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .hot-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .hot-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #E6F7E9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #279E48;
+        }
+        .hot-text {
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+        }
+        .exchange-tab {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .tab-item {
+            padding: 8px 12px;
+            background: #E6F7E9;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+        .tab-item.active {
+            background: #279E48;
+            color: white;
+        }
+        .goods-list {
+            display: none;
+        }
+        .goods-list.active {
+            display: block;
+        }
+        .goods-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .goods-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .goods-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+        .goods-info {
+            line-height: 1.4;
+        }
+        .goods-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        .goods-spec {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .goods-score {
+            font-size: 13px;
+            color: #279E48;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .exchange-btn {
+            background: #279E48;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .rank-container {
+            max-height: 460px;
+            overflow-y: auto;
+        }
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 11px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .rank-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #279E48;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-right: 14px;
+        }
+        .rank-name {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+        .rank-score {
+            font-size: 14px;
+            color: #279E48;
+            font-weight: bold;
+        }
+        .recycle-type {
+            background: white;
+            margin: 12px;
+            border-radius: 14px;
+            padding: 5px;
+        }
+        .recycle-type-btn {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #E6F7E9;
+            font-size: 15px;
+        }
+        .recycle-type-btn.active {
+            border-color: #279E48;
+            background: #f1f9f3;
+            color: #279E48;
+            font-weight: bold;
+        }
+        .recycle-price-card {
+            background: white;
+            margin: 12px;
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .recycle-items {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-top: 6px;
+        }
+        .recycle-score-info {
+            color: #279E48;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .recycle-input-group {
+            background: white;
+            margin: 0 12px 12px;
+            border-radius: 14px;
+            padding: 15px;
+        }
+        .recycle-input-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .recycle-input-box {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 5px;
+        }
+        .recycle-submit-btn {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: #279E48;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        /* 底部统一图标导航 */
+        .bottom-tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 30px 30px 0 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 18px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+            border-top: 1px solid #e2f0da;
+            z-index: 999;
+        }
+        .bottom-tab-bar .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: #92b282;
+            cursor: pointer;
+            flex: 1;
+        }
+        .bottom-tab-bar .tab-item i {
+            font-size: 1.4rem;
+        }
+        .bottom-tab-bar .tab-item.active {
+            color: #3c9e3a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="mobile-wrapper">
+    <div class="top">积分商城</div>
+    <!-- 原来三个导航 移到顶部 -->
+    <div class="top-nav">
+        <div class="nav-item active" onclick="showPage('score')">绿益积分</div>
+        <div class="nav-item" onclick="showPage('exchange')">积分兑换</div>
+        <div class="nav-item" onclick="showPage('ranking')">文明榜单</div>
+    </div>
+    <div class="page-content">
+        <!-- 绿益积分 -->
+        <div id="score" class="page active">
+            <div class="card">
+                <div class="card-title">我的绿益积分</div>
+                <div class="score-num" id="currentScoreDisplay">1269</div>
+                <div class="score-desc">回收金额：12.69元 | 累计积分：<span id="currentScoreText">1269</span></div>
+                <div class="rule-box">
+                    ✅ 上门回收：1元 = 获得100积分<br>
+                    ✅ 积分兑换：100积分 = 抵扣1元<br>
+                    ✅ 积分用途：兑换品牌商品、会员、优惠券、包邮到家
+                </div>
+            </div>
+            <div class="sign-card">
+                <div class="card-title">每日签到 +5积分</div>
+                <div class="sign-days">
+                    <div class="day-item checked">一</div><div class="day-item checked">二</div>
+                    <div class="day-item">三</div><div class="day-item">四</div>
+                    <div class="day-item">五</div><div class="day-item">六</div><div class="day-item">日</div>
+                </div>
+                <div class="sign-btn" id="signBtn">立即签到</div>
+            </div>
+            <div class="card">
+                <div class="card-title">积分任务</div>
+                <div class="task-item"><div class="task-left"><div class="task-icon">📦</div><div>完成上门回收 +100积分</div></div><span class="task-btn" id="goRecycle">去完成</span></div>
+                <div class="task-item"><div class="task-left"><div class="task-icon">📝</div><div>发布回收动态 +20积分</div></div><span class="task-btn">去完成</span></div>
+                <div class="task-left"><div class="task-icon">👥</div><div>邀请1位好友 +500积分</div></div><span class="task-btn">去完成</span></div>
+            <div class="task-item"><div class="task-left"><div class="task-icon">⭐</div><div>评价回收员 +30积分</div></div><span class="task-btn">去完成</span></div>
+            <div class="task-item"><div class="task-left"><div class="task-icon">📖</div><div>浏览积分商城 +10积分</div></div><span class="task-btn">去完成</span></div>
+            <div class="task-item"><div class="task-left"><div class="task-icon">✅</div><div>每日登录 +10积分</div></div><span class="task-btn">去完成</span></div>
+        </div>
+    </div>
+    <!-- 积分兑换（所有商品完整保留） -->
+    <div id="exchange" class="page">
+        <div class="card">
+            <div class="card-title">热门兑换</div>
+            <div class="hot-grid">
+                <div class="hot-item" onclick="jumpToGoods('limit')"><div class="hot-icon">⚡</div><div class="hot-text">限时抢兑</div></div>
+                <div class="hot-item" onclick="jumpToGoods('electronics')"><div class="hot-icon">📱</div><div class="hot-text">数码电器</div></div>
+                <div class="hot-item" onclick="jumpToGoods('home')"><div class="hot-icon">🏠</div><div class="hot-text">日常家居</div></div>
+                <div class="hot-item" onclick="jumpToGoods('food')"><div class="hot-icon">🍜</div><div class="hot-text">美食饮品</div></div>
+                <div class="hot-item" onclick="jumpToGoods('beauty')"><div class="hot-icon">💄</div><div class="hot-text">美妆个护</div></div>
+                <div class="hot-item" onclick="jumpToGoods('clothes')"><div class="hot-icon">👜</div><div class="hot-text">服饰箱包</div></div>
+                <div class="hot-item" onclick="jumpToGoods('kitchen')"><div class="hot-icon">🍳</div><div class="hot-text">厨具卫浴</div></div>
+                <div class="hot-item" onclick="jumpToGoods('member')"><div class="hot-icon">🎵</div><div class="hot-text">会员充值</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">积分商城</div>
+            <div class="exchange-tab">
+                <div class="tab-item active" data-target="limit">限时抢兑</div>
+                <div class="tab-item" data-target="electronics">电器数码</div>
+                <div class="tab-item" data-target="home">日常家居</div>
+                <div class="tab-item" data-target="food">美食美酒</div>
+                <div class="tab-item" data-target="beauty">美妆首饰</div>
+                <div class="tab-item" data-target="clothes">服饰箱包</div>
+                <div class="tab-item" data-target="kitchen">厨具卫浴</div>
+                <div class="tab-item" data-target="member">会员充值</div>
+            </div>
+            <div id="limit" class="goods-list active">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/110/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">小米自带线充电宝</div>
+                            <div class="goods-spec">20000mAh 22.5W 深灰色</div>
+                            <div class="goods-score">7999积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(7999)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/41/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">维达原生抽纸</div>
+                            <div class="goods-spec">3层100抽*24包 整箱</div>
+                            <div class="goods-score">4800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(4800)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/160/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">曼秀雷敦防晒霜</div>
+                            <div class="goods-spec">SPF50+ 80g 便携装</div>
+                            <div class="goods-score">4720积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(4720)">立即兑换</button>
+                </div>
+            </div>
+            <div id="electronics" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/26/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">小米负离子吹风机</div>
+                            <div class="goods-spec">H100 1600W 白色</div>
+                            <div class="goods-score">15998积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(15998)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/96/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">华为智能手环9</div>
+                            <div class="goods-spec">标准版 静谧蓝 长续航</div>
+                            <div class="goods-score">28900积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(28900)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/24/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">罗马仕迷你充电宝</div>
+                            <div class="goods-spec">10000mAh 20W 白色</div>
+                            <div class="goods-score">5200积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(5200)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/60/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">小米蓝牙耳机Air2 SE</div>
+                            <div class="goods-spec">半入耳 长续航 白色</div>
+                            <div class="goods-score">12800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(12800)">立即兑换</button>
+                </div>
+            </div>
+            <div id="home" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/66/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">水星家纺护颈枕</div>
+                            <div class="goods-spec">记忆棉 40*60cm 成人款</div>
+                            <div class="goods-score">5900积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(5900)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/128/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">洁云卷纸卫生纸</div>
+                            <div class="goods-spec">4层180g*20卷 整箱</div>
+                            <div class="goods-score">3600积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(3600)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/170/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">妙洁百洁布海绵擦</div>
+                            <div class="goods-spec">8片装 厨房清洁</div>
+                            <div class="goods-score">1200积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(1200)">立即兑换</button>
+                </div>
+            </div>
+            <div id="food" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/292/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">五常大米真空装</div>
+                            <div class="goods-spec">10斤装 一级粳米</div>
+                            <div class="goods-score">9800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(9800)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/431/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">雀巢速溶咖啡</div>
+                            <div class="goods-spec">100条装 原味</div>
+                            <div class="goods-score">12600积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(12600)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/220/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">三只松鼠坚果礼盒</div>
+                            <div class="goods-spec">10袋装 混合坚果</div>
+                            <div class="goods-score">8600积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(8600)">立即兑换</button>
+                </div>
+            </div>
+            <div id="beauty" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/160/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">曼秀雷敦防晒霜</div>
+                            <div class="goods-spec">SPF50+ PA+++ 80g</div>
+                            <div class="goods-score">4900积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(4900)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/219/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">自然堂补水面膜</div>
+                            <div class="goods-spec">30片装 保湿提亮</div>
+                            <div class="goods-score">6800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(6800)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/199/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">舒客牙膏套装</div>
+                            <div class="goods-spec">4支装 亮白护龈</div>
+                            <div class="goods-score">2200积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(2200)">立即兑换</button>
+                </div>
+            </div>
+            <div id="clothes" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/100/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">袋鼠商务公文包</div>
+                            <div class="goods-spec">皮质 14英寸 黑色</div>
+                            <div class="goods-score">12900积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(12900)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/182/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">恒源祥纯棉袜子</div>
+                            <div class="goods-spec">10双装 透气吸汗</div>
+                            <div class="goods-score">3600积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(3600)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/211/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">南极人保暖内衣</div>
+                            <div class="goods-spec">薄款 圆领 黑色套装</div>
+                            <div class="goods-score">7800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(7800)">立即兑换</button>
+                </div>
+            </div>
+            <div id="kitchen" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/108/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">苏泊尔球釜电饭煲</div>
+                            <div class="goods-spec">5L 智能预约 不粘内胆</div>
+                            <div class="goods-score">19999积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(19999)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/119/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">九阳静音破壁机</div>
+                            <div class="goods-spec">1.75L 多功能加热</div>
+                            <div class="goods-score">26800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(26800)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <img src="https://picsum.photos/id/132/55/55" class="goods-img">
+                        <div class="goods-info">
+                            <div class="goods-name">康巴赫不粘锅炒锅</div>
+                            <div class="goods-spec">32cm 家用炒菜锅</div>
+                            <div class="goods-score">15600积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(15600)">立即兑换</button>
+                </div>
+            </div>
+            <div id="member" class="goods-list">
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <div class="hot-icon" style="width:55px;height:55px;">🎵</div>
+                        <div class="goods-info">
+                            <div class="goods-name">网易云音乐会员</div>
+                            <div class="goods-spec">月卡 30天</div>
+                            <div class="goods-score">1500积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(1500)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <div class="hot-icon" style="width:55px;height:55px;">📺</div>
+                        <div class="goods-info">
+                            <div class="goods-name">腾讯视频会员</div>
+                            <div class="goods-spec">月卡 30天</div>
+                            <div class="goods-score">1800积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(1800)">立即兑换</button>
+                </div>
+                <div class="goods-item">
+                    <div class="goods-left">
+                        <div class="hot-icon" style="width:55px;height:55px;">🥤</div>
+                        <div class="goods-info">
+                            <div class="goods-name">美团外卖红包</div>
+                            <div class="goods-spec">5元无门槛券</div>
+                            <div class="goods-score">1000积分</div>
+                        </div>
+                    </div>
+                    <button class="exchange-btn" onclick="doExchange(1000)">立即兑换</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 文明榜单 -->
+    <div id="ranking" class="page">
+        <div class="card">
+            <div class="card-title">全区回收积分排行榜</div>
+            <div class="score-desc">实时更新，按回收总积分排序</div>
+        </div>
+        <div class="card rank-container" id="rankList"></div>
+    </div>
+    <!-- 上门回收 -->
+    <div id="recycle" class="page">
+        <div class="top">
+            <span class="back-arrow" id="backToScore">←</span>
+            上门回收
+        </div>
+        <div class="recycle-type">
+            <div class="recycle-type-btn active">普通回收</div>
+        </div>
+        <div class="recycle-price-card">
+            <div>
+                <div style="font-weight:bold;margin-bottom:8px;">本次回收预估</div>
+                <div style="font-size:36px;color:#279E48;font-weight:bold;">¥1269</div>
+                <div class="recycle-items">
+                    回收物品：<br>
+                    纯铜电线×10斤 | 铝合金×20斤<br>
+                    废旧手机×2台 | 纸箱/塑料瓶杂项
+                </div>
+            </div>
+            <div class="recycle-score-info">可获得积分：1269<br>1元=1积分</div>
+        </div>
+        <div class="recycle-input-group">
+            <div class="recycle-input-item">
+                <span style="color:#279E48;margin-right:12px;">📍</span>
+                <input type="text" class="recycle-input-box" placeholder="请输入取件地址">
+            </div>
+            <div class="recycle-input-item">
+                <span style="color:#279E48;margin-right:12px;">🕒</span>
+                <input type="text" class="recycle-input-box" placeholder="请输入取件时间">
+            </div>
+        </div>
+        <button class="recycle-submit-btn" id="recycleSubmit">确认回收</button>
+    </div>
+</div>
+
+<!-- 底部导航 → 100%能跳转 -->
+<div class="bottom-tab-bar">
+    <div class="tab-item" onclick="window.location.href='index.html'">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+    </div>
+    <div class="tab-item active" onclick="window.location.href='积分商城.html'">
+        <i class="fas fa-coins"></i>
+        <span>积分</span>
+    </div>
+    <div class="tab-item" onclick="alert('消息开发中')">
+        <i class="fas fa-comment-dots"></i>
+        <span>消息</span>
+    </div>
+    <div class="tab-item" onclick="window.location.href='绿益回收.html'">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+    </div>
+</div>
+</div>
+
+<script>
+    let currentScore = 1269;
+    const surnames = ["张","李","王","刘","陈","杨","赵","黄","周","吴"];
+    const names = ["先生","女士","师傅"];
+
+    function updateScore() {
+        document.getElementById("currentScoreDisplay").innerText = currentScore;
+        document.getElementById("currentScoreText").innerText = currentScore;
+    }
+
+    function showPage(id) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        document.querySelectorAll(".top-nav .nav-item").forEach((item,i)=>{
+            item.classList.remove("active");
+            if((id==="score"&&i===0)||(id==="exchange"&&i===1)||(id==="ranking"&&i===2)) item.classList.add("active");
+        });
+    }
+
+    document.querySelectorAll(".exchange-tab .tab-item").forEach(tab=>{
+        tab.onclick=()=>{
+            document.querySelectorAll(".exchange-tab .tab-item").forEach(t=>t.classList.remove("active"));
+            document.querySelectorAll(".goods-list").forEach(g=>g.classList.remove("active"));
+            tab.classList.add("active");
+            document.getElementById(tab.dataset.target).classList.add("active");
+        }
+    });
+
+    function jumpToGoods(tabId){
+        showPage("exchange");
+        setTimeout(()=>{
+            document.querySelectorAll(".exchange-tab .tab-item").forEach(t=>t.classList.remove("active"));
+            document.querySelectorAll(".goods-list").forEach(g=>g.classList.remove("active"));
+            document.querySelector(`.exchange-tab .tab-item[data-target="${tabId}"]`).classList.add("active");
+            document.getElementById(tabId).classList.add("active");
+        },100);
+    }
+
+    function doExchange(need){
+        if(currentScore<need) alert("积分不足！");
+        else{ currentScore-=need; updateScore(); alert("兑换成功！"); }
+    }
+
+    function genRank(){
+        let list=document.getElementById("rankList");
+        list.innerHTML="";
+        let base=80000;
+        for(let i=1;i<=50;i++){
+            let name = surnames[Math.random()*surnames.length|0] + names[Math.random()*names.length|0];
+            base -= Math.random()*2000+300|0;
+            if(i===4){name="我";base=currentScore;}
+            list.innerHTML+=`<div class="rank-item"><div class="rank-num">${i}</div><div class="rank-name">${name}</div><div class="rank-score">${base|0} 积分</div></div>`;
+        }
+    }
+
+    document.getElementById("signBtn").onclick=()=>{
+        currentScore+=0.5; updateScore();
+        alert("签到成功+0.5积分");
+        document.getElementById("signBtn").innerText="已签到";
+        document.getElementById("signBtn").style.background="#ccc";
+    }
+
+    document.getElementById("goRecycle").onclick=()=>showPage("recycle");
+    document.getElementById("backToScore").onclick=()=>showPage("score");
+    document.getElementById("recycleSubmit").onclick=()=>{ alert("提交成功"); currentScore+=1269; updateScore(); genRank(); };
+
+    window.onload=()=>{ genRank(); updateScore(); };
+</script>
+</body>
+</html>
