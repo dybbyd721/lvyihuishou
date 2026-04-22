@@ -49,6 +49,27 @@
           font-size: 14px;
           color: #666;
         }
+        .role-select {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+        .role-item {
+          flex: 1;
+          height: 44px;
+          border: 1px solid #e0e0e0;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background: #fafdfb;
+        }
+        .role-item.active {
+          background: #2eaa58;
+          color: #fff;
+          border-color: #2eaa58;
+        }
         .input-group {
           margin-bottom: 20px;
         }
@@ -96,18 +117,22 @@
     </style>
 </head>
 <body>
-
 <div class="card">
     <div class="logo-area">
         <div class="logo-title">绿益回收</div>
         <div class="logo-subtitle">基于AI识别 · 环保积分平台</div>
     </div>
 
-    <div class="input-group">
-        <label class="input-label">账号 / 手机号</label>
-        <input type="text" id="username" class="input-field" placeholder="请输入账号">
+    <!-- 身份选择 -->
+    <div class="role-select">
+        <div class="role-item active" data-role="user">普通用户</div>
+        <div class="role-item" data-role="staff">回收员</div>
     </div>
 
+    <div class="input-group">
+        <label class="input-label">账号 / 手机号</label>
+        <input type="text" id="phone" class="input-field" placeholder="请输入账号">
+    </div>
     <div class="input-group">
         <label class="input-label">密码</label>
         <input type="password" id="password" class="input-field" placeholder="请输入密码">
@@ -122,28 +147,59 @@
 </div>
 
 <script>
-    // 登录逻辑
-    const loginBtn = document.getElementById('loginBtn');
-    loginBtn.addEventListener('click', function () {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
+    // 身份切换逻辑
+    const roleItems = document.querySelectorAll('.role-item');
+    let currentRole = 'user';
 
-        if (!username || !password) {
-            alert('请输入账号和密码');
+    roleItems.forEach(item => {
+        item.addEventListener('click', () => {
+            roleItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            currentRole = item.dataset.role;
+        });
+    });
+
+    // 登录逻辑（稳定版）
+    document.getElementById('loginBtn').addEventListener('click', function() {
+        const phone = document.getElementById('phone').value.trim();
+        const pwd = document.getElementById('password').value.trim();
+
+        if (!phone || !pwd) {
+            alert("请输入手机号和密码");
             return;
         }
 
-        // 测试账号
-        if (username === 'admin' && password === '123456') {
-            sessionStorage.setItem('isLogin', 'true');
-            alert('登录成功');
-            localStorage.setItem("isLogin", "true");
-            window.location.href = 'index.html';
-        } else {
-            alert('账号或密码错误');
-        }
+        // 根据身份调用不同接口
+        const apiUrl = currentRole === 'user'
+            ? 'http://localhost:3666/api/loginUser'
+            : 'http://localhost:3666/api/loginStaff';
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: phone, password: pwd })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('接口返回数据:', data); // 调试用，方便看返回值
+            if (data.ok) {
+                alert("登录成功，即将跳转...");
+                localStorage.setItem('user', JSON.stringify(data.data));
+                // 根据角色跳转
+                if (currentRole === 'user') {
+                    location.href = 'index.html';
+                } else {
+                    location.href = '员工端.html';
+                }
+            } else {
+                alert(data.msg || "登录失败");
+            }
+        })
+        .catch(err => {
+            console.error('请求错误:', err);
+            alert('请求失败，请检查后端是否启动');
+        });
     });
 </script>
-
 </body>
 </html>

@@ -49,14 +49,14 @@
           font-size: 14px;
           color: #666;
         }
-        .tab-wrap {
+        .role-tabs {
           display: flex;
           margin-bottom: 24px;
           border-radius: 12px;
           overflow: hidden;
           border: 1px solid #e5e5e5;
         }
-        .tab-item {
+        .role-tab {
           flex: 1;
           height: 44px;
           display: flex;
@@ -66,7 +66,7 @@
           cursor: pointer;
           font-size: 15px;
         }
-        .tab-item.active {
+        .role-tab.active {
           background: #2eaa58;
           color: #fff;
         }
@@ -139,57 +139,60 @@
           color: #2eaa58;
           text-decoration: none;
         }
-        .reg-input { display: none; }
-        .reg-input.show { display: block; }
+        .staff-box {
+          display: none;
+        }
     </style>
 </head>
 <body>
-
 <div class="card">
     <div class="logo-area">
         <div class="logo-title">账号注册</div>
         <div class="logo-subtitle">绿益回收 · 环保积分平台</div>
     </div>
 
-    <div class="tab-wrap">
-        <div class="tab-item active" onclick="switchReg('phone')">手机号注册</div>
-        <div class="tab-item" onclick="switchReg('email')">邮箱注册</div>
+    <!-- 身份选择 -->
+    <div class="role-tabs">
+        <div class="role-tab active" onclick="switchRole('user')">用户注册</div>
+        <div class="role-tab" onclick="switchRole('staff')">回收员注册</div>
     </div>
 
-    <div class="input-group reg-input show" id="phoneBox">
+    <!-- 公用输入框 -->
+    <div class="input-group">
         <label class="input-label">手机号</label>
-        <input type="text" class="input-field" placeholder="请输入11位手机号">
+        <input id="phone" type="text" class="input-field" placeholder="请输入11位手机号">
     </div>
 
-    <div class="input-group reg-input" id="emailBox">
-        <label class="input-label">邮箱地址</label>
-        <input type="text" class="input-field" placeholder="请输入常用邮箱">
+    <!-- 回收员专用：工号 -->
+    <div class="input-group staff-box" id="workIdBox">
+        <label class="input-label">回收员工号</label>
+        <input id="workId" type="text" class="input-field" placeholder="请输入工号">
     </div>
 
     <div class="input-group">
         <label class="input-label">验证码</label>
         <div class="code-row">
-            <input type="text" class="input-field" placeholder="请输入验证码">
-            <button class="code-btn" onclick="sendCode(this)">获取验证码</button>
+            <input id="code" type="text" class="input-field" placeholder="请输入验证码">
+            <button id="sendCodeBtn" class="code-btn">获取验证码</button>
         </div>
     </div>
 
     <div class="input-group">
         <label class="input-label">设置密码</label>
-        <input type="password" class="input-field" placeholder="6-16位密码">
+        <input id="password" type="password" class="input-field" placeholder="6-16位密码">
     </div>
 
     <div class="input-group">
         <label class="input-label">确认密码</label>
-        <input type="password" class="input-field" placeholder="再次输入密码">
+        <input id="repassword" type="password" class="input-field" placeholder="再次输入密码">
     </div>
 
     <div class="agreement">
         <input type="checkbox" checked>
-        <span>同意<a href="#">用户协议</a>和<a href="#">隐私政策</a></span>
+        <span>同意用户协议和隐私政策</span>
     </div>
 
-    <button class="main-btn">完成注册</button>
+    <button id="registerBtn" class="main-btn">完成注册</button>
 
     <div class="link-group">
         已有账号？<a href="login.html">返回登录</a>
@@ -197,39 +200,83 @@
 </div>
 
 <script>
-    function switchReg(type) {
-      const phoneBox = document.getElementById('phoneBox');
-      const emailBox = document.getElementById('emailBox');
-      const tabs = document.querySelectorAll('.tab-item');
-      tabs.forEach(t=>t.classList.remove('active'));
-      if(type === 'phone'){
-        phoneBox.classList.add('show');
-        emailBox.classList.remove('show');
-        tabs[0].classList.add('active');
+    let currentRole = 'user';
+
+    // 切换身份（修复点击BUG）
+    function switchRole(role) {
+      currentRole = role;
+      const tabs = document.querySelectorAll('.role-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // 回收员显示工号
+      if (role === 'staff') {
+        document.getElementById('workIdBox').style.display = 'block';
       } else {
-        emailBox.classList.add('show');
-        phoneBox.classList.remove('show');
-        tabs[1].classList.add('active');
+        document.getElementById('workIdBox').style.display = 'none';
       }
     }
 
-    function sendCode(btn) {
-      if(btn.disabled) return;
-      btn.disabled = true;
-      let s = 60;
-      btn.innerText = s+'秒后重发';
-      const timer = setInterval(()=>{
-        s--;
-        if(s<=0){
-          clearInterval(timer);
-          btn.disabled = false;
-          btn.innerText = '获取验证码';
-        } else {
-          btn.innerText = s+'秒后重发';
-        }
-      },1000);
-    }
-</script>
+    // 获取验证码
+    document.getElementById('sendCodeBtn').onclick = function () {
+      const phone = document.getElementById('phone').value.trim();
+      if (!phone || phone.length !== 11) {
+        alert('请输入正确手机号');
+        return;
+      }
+      fetch('http://localhost:3666/api/sendCode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      }).then(res => res.json()).then(data => {
+        alert(data.msg);
+        let btn = this;
+        btn.disabled = true;
+        let s = 60;
+        let timer = setInterval(() => {
+          s--;
+          btn.innerText = s + '秒重发';
+          if (s <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+            btn.innerText = '获取验证码';
+          }
+        }, 1000);
+      });
+    };
 
+    // 注册（自动区分用户/回收员）
+    document.getElementById('registerBtn').onclick = function () {
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const repassword = document.getElementById('repassword').value.trim();
+      const code = document.getElementById('code').value.trim();
+      const workId = document.getElementById('workId').value.trim();
+
+      if (!phone || phone.length !== 11) return alert('请输入正确手机号');
+      if (password.length < 6) return alert('密码至少6位');
+      if (password !== repassword) return alert('两次密码不一致');
+      if (!code) return alert('请输入验证码');
+      if (currentRole === 'staff' && !workId) return alert('请输入回收员工号');
+
+      // 区分接口
+      const api = currentRole === 'user'
+        ? 'http://localhost:3666/api/registerUser'
+        : 'http://localhost:3666/api/registerStaff';
+
+      const postData = currentRole === 'user'
+        ? { phone, password, code }
+        : { phone, password, code, workId };
+
+      fetch(api, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData)
+      }).then(res => res.json()).then(data => {
+        alert(data.msg);
+        if (data.ok) location.href = 'login.html';
+      });
+    };
+</script>
 </body>
 </html>

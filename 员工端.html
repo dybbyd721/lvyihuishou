@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绿益回收 - 员工端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        /* 1. 两侧收窄，竖屏样式 */
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+        }
+        .mobile-wrapper {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: #f5f5f5;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .page-content {
+            padding-bottom: 80px;
+        }
+        /* 【通用修改】所有页面顶部栏：返回按钮和文字完全分开 */
+        .common-top-bar {
+            background-color: #2E7D32;
+            color: white;
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .left-back-area {
+            width: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .back-arrow-text {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .center-title-area {
+            flex: 1;
+            text-align: center;
+            padding-right: 55px; /* 视觉居中 */
+        }
+        .title-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        /* 首页特殊顶部栏（无返回） */
+        .home-top-bar {
+            background-color: #2E7D32;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .switch {
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+        }
+        .switch.active {
+            background: #fff;
+        }
+        .switch::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+        .switch.active::after {
+            left: 28px;
+            background: #2E7D32;
+        }
+        .data-card {
+            background: white;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .data-item {
+            text-align: center;
+        }
+        .data-num {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .filter-bar {
+            background: white;
+            margin: 0 10px;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .filter-btn, .sort-btn {
+            color: #2E7D32;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .refresh-tip {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            padding: 5px;
+        }
+        .order-list {
+            margin: 10px;
+        }
+        .order-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .order-tag {
+            display: inline-block;
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .order-tag.complete {
+            background:#e3f2fd;
+            color:#1976d2;
+        }
+        .order-info {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .order-money {
+            color: #2E7D32;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .empty-tip {
+            text-align: center;
+            color: #999;
+            padding: 50px 20px;
+            font-size: 15px;
+        }
+        .tab-bar {
+            background: white;
+            display: flex;
+            margin: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+        .tab.active {
+            color: #2E7D32;
+            border-bottom: 2px solid #2E7D32;
+            font-weight: bold;
+        }
+        .msg-list {
+            margin: 0 10px;
+        }
+        .msg-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .msg-avatar {
+            width: 40px;
+            height: 40px;
+            background: #E8F5E9;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        .msg-content {
+            flex: 1;
+        }
+        .msg-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .msg-preview {
+            color: #999;
+            font-size: 12px;
+        }
+        .red-dot {
+            width: 8px;
+            height: 8px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+        /* 聊天界面样式 */
+        .chat-container {
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-area {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .chat-bubble {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .chat-bubble.left {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .chat-bubble.right {
+            background: #95EC69;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-input-area {
+            background: white;
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #eee;
+        }
+        .chat-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 15px;
+        }
+        .chat-send-btn {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .user-header {
+            background-color: #2E7D32;
+            color: white;
+            padding: 30px 20px;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2E7D32;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .user-id {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .earn-card {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+        }
+        .earn-item {
+            text-align: center;
+        }
+        .earn-num {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .earn-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .func-list {
+            background: white;
+            margin: 0 15px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .func-item {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .func-item:last-child {
+            border-bottom: none;
+        }
+        .func-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+        }
+        .func-icon {
+            color: #2E7D32;
+            font-size: 16px;
+        }
+        .func-arrow {
+            color: #999;
+        }
+        /* 服务范围/账号设置/关于平台 页面样式 */
+        .setting-card, .about-card, .map-card {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .setting-title, .about-title {
+            font-size: 17px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .switch-account-btn {
+            background: #fff;
+            color: #d32f2f;
+            border: 1px solid #d32f2f;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .map-placeholder {
+            background: #E8F5E9;
+            height: 250px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #2E7D32;
+            font-size: 16px;
+        }
+        .map-city {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .about-content {
+            color: #666;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        .about-notice {
+            background: #fff8e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffc107;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="mobile-wrapper">
+    <div class="page-content">
+
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="home-top-bar">
+                <div class="status" style="display:flex;align-items:center;gap:12px;">
+                    <span id="status-text">已上线 | 正常接单</span>
+                    <div class="switch active" id="status-switch"></div>
+                </div>
+                <div class="quick-func">
+                    <span>智能路线</span>
+                    <span>淡季推荐</span>
+                    <span>🔔</span>
+                </div>
+            </div>
+
+            <div class="data-card">
+                <div class="data-item">
+                    <div class="data-num">¥286.5</div>
+                    <div>今日总收入</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-num">12</div>
+                    <div>已完成订单</div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-btn">🔍 筛选</div>
+                <div class="sort-btn">顺路优先 ▼</div>
+                <div class="sort-btn">🗺️ 地图视图</div>
+            </div>
+
+            <div class="refresh-tip">30秒自动刷新 | 下拉手动刷新</div>
+
+            <div class="order-list">
+                <div class="order-card" onclick="showPage('page-order')">
+                    <div class="order-tag">纸类回收</div>
+                    <div class="order-info">卖家：张先生 | 138****1234</div>
+                    <div class="order-info">📍 取件：常州市新北区万达广场</div>
+                    <div class="order-info">⏰ 时间：今天 14:00-16:00</div>
+                    <div class="order-money">预估收入：¥35.0</div>
+                </div>
+                <div class="order-card" onclick="showPage('page-order')">
+                    <div class="order-tag">家电回收</div>
+                    <div class="order-info">卖家：李女士 | 139****5678</div>
+                    <div class="order-info">📍 取件：常州市天宁区九洲花园</div>
+                    <div class="order-info">⏰ 时间：今天 15:00-17:00</div>
+                    <div class="order-money">预估收入：¥120.0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 订单页面 - 使用新顶部栏 -->
+        <div id="page-order" class="page">
+            <div class="common-top-bar">
+                <div class="left-back-area" onclick="showPage('page-home')">
+                    <span class="back-arrow-text">←</span>
+                </div>
+                <div class="center-title-area">
+                    <span class="title-text">我的订单</span>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab active" onclick="switchOrderTab('all', this)">全部订单</div>
+                <div class="tab" onclick="switchOrderTab('pending', this)">待接单</div>
+                <div class="tab" onclick="switchOrderTab('ontheway', this)">待上门</div>
+                <div class="tab" onclick="switchOrderTab('complete', this)">已完成</div>
+            </div>
+
+            <div id="order-list-all" class="order-list">
+                <div class="order-card">
+                    <div class="order-tag">待上门</div>
+                    <div class="order-info">卖家：张先生 | 138****1234</div>
+                    <div class="order-info">📍 取件：常州市新北区万达广场</div>
+                    <div class="order-info">⏰ 时间：今天 14:00-16:00</div>
+                    <div class="order-info">📦 品类：纸类回收</div>
+                    <div class="order-money">预估收入：¥35.0</div>
+                </div>
+                <div class="order-card">
+                    <div class="order-tag complete">已完成</div>
+                    <div class="order-info">卖家：王女士 | 135****4321</div>
+                    <div class="order-info">📍 取件：常州市钟楼区吾悦广场</div>
+                    <div class="order-info">⏰ 时间：昨天 10:00-12:00</div>
+                    <div class="order-info">📦 品类：旧家电回收</div>
+                    <div class="order-money">实际收入：¥180.0</div>
+                </div>
+            </div>
+
+            <div id="order-list-pending" class="order-list" style="display:none;">
+                <div class="empty-tip">暂时没有订单</div>
+            </div>
+
+            <div id="order-list-ontheway" class="order-list" style="display:none;">
+                <div class="order-card">
+                    <div class="order-tag">待上门</div>
+                    <div class="order-info">卖家：张先生 | 138****1234</div>
+                    <div class="order-info">📍 取件：常州市新北区万达广场</div>
+                    <div class="order-info">⏰ 时间：今天 14:00-16:00</div>
+                    <div class="order-info">📦 品类：纸类回收</div>
+                    <div class="order-money">预估收入：¥35.0</div>
+                </div>
+            </div>
+
+            <div id="order-list-complete" class="order-list" style="display:none;">
+                <div class="order-card">
+                    <div class="order-tag complete">已完成</div>
+                    <div class="order-info">卖家：王女士 | 135****4321</div>
+                    <div class="order-info">📍 取件：常州市钟楼区吾悦广场</div>
+                    <div class="order-info">⏰ 时间：昨天 10:00-12:00</div>
+                    <div class="order-info">📦 品类：旧家电回收</div>
+                    <div class="order-money">实际收入：¥180.0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 消息页面 - 使用新顶部栏 -->
+        <div id="page-message" class="page">
+            <div class="common-top-bar">
+                <div class="left-back-area" onclick="showPage('page-home')">
+                    <span class="back-arrow-text">←</span>
+                </div>
+                <div class="center-title-area">
+                    <span class="title-text">消息中心</span>
+                </div>
+            </div>
+
+            <div class="tab-bar">
+                <div class="tab active" onclick="switchMsgTab('user', this)">用户对话</div>
+                <div class="tab" onclick="switchMsgTab('service', this)">客服对话</div>
+            </div>
+
+            <div id="msg-list-user" class="msg-list">
+                <div class="msg-item" onclick="openChat('张先生')">
+                    <div class="msg-avatar">张</div>
+                    <div class="msg-content">
+                        <div class="msg-name">张先生</div>
+                        <div class="msg-preview">你好，请问可以调整上门时间吗？</div>
+                    </div>
+                    <div class="red-dot"></div>
+                </div>
+                <div class="msg-item" onclick="openChat('李女士')">
+                    <div class="msg-avatar">李</div>
+                    <div class="msg-content">
+                        <div class="msg-name">李女士</div>
+                        <div class="msg-preview">回收物品已经整理好了，随时可以上门</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="msg-list-service" class="msg-list" style="display:none;">
+                <div class="msg-item" onclick="openChat('平台客服')">
+                    <div class="msg-avatar">客</div>
+                    <div class="msg-content">
+                        <div class="msg-name">平台客服</div>
+                        <div class="msg-preview">您好，请问有什么可以帮您？</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天界面 - 使用新顶部栏 -->
+        <div id="page-chat" class="page">
+            <div class="chat-container">
+                <div class="common-top-bar">
+                    <div class="left-back-area" onclick="backFromChat()">
+                        <span class="back-arrow-text">←</span>
+                    </div>
+                    <div class="center-title-area">
+                        <span class="title-text" id="chat-title">聊天</span>
+                    </div>
+                </div>
+                <div class="chat-area" id="chat-area">
+                    <!-- 聊天内容由JS动态生成 -->
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="输入消息...">
+                    <button class="chat-send-btn" onclick="sendMsg()">发送</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人中心页面 -->
+        <div id="page-my" class="page">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar">员</div>
+                    <div>
+                        <div class="user-name">回收员-王师傅</div>
+                        <div class="user-id">工号：GY00123 | 常州专区</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="earn-card">
+                <div class="earn-item">
+                    <div class="earn-num">¥286.5</div>
+                    <div class="earn-text">今日收益</div>
+                </div>
+                <div class="earn-item">
+                    <div class="earn-num">¥1520.0</div>
+                    <div class="earn-text">本周收益</div>
+                </div>
+                <div class="earn-item">
+                    <div class="earn-num">12</div>
+                    <div class="earn-text">已完成订单</div>
+                </div>
+            </div>
+
+            <div class="func-list">
+                <div class="func-item" onclick="showPage('page-order'); setBottomNav('order');">
+                    <div class="func-text">
+                        <span class="func-icon">📋</span>
+                        <span>我的订单</span>
+                    </div>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="func-item" onclick="showPage('page-service-area')">
+                    <div class="func-text">
+                        <span class="func-icon">📍</span>
+                        <span>服务范围</span>
+                    </div>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="func-item" onclick="openChat('平台客服'); currentChatFrom='my';">
+                    <div class="func-text">
+                        <span class="func-icon">📞</span>
+                        <span>联系客服</span>
+                    </div>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="func-item" onclick="showPage('page-account')">
+                    <div class="func-text">
+                        <span class="func-icon">⚙️</span>
+                        <span>账号设置</span>
+                    </div>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="func-item" onclick="showPage('page-about')">
+                    <div class="func-text">
+                        <span class="func-icon">ℹ️</span>
+                        <span>关于平台</span>
+                    </div>
+                    <span class="func-arrow">></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务范围页面 - 使用新顶部栏 -->
+        <div id="page-service-area" class="page">
+            <div class="common-top-bar">
+                <div class="left-back-area" onclick="showPage('page-my')">
+                    <span class="back-arrow-text">←</span>
+                </div>
+                <div class="center-title-area">
+                    <span class="title-text">服务范围</span>
+                </div>
+            </div>
+            <div class="map-card">
+                <div class="map-placeholder">
+                    <span>🗺️</span>
+                    <div class="map-city">常州市</div>
+                    <div style="font-size:14px;margin-top:5px;">当前服务区域</div>
+                </div>
+                <div class="setting-card" style="margin:15px 0 0 0;">
+                    <div class="setting-title">覆盖区域</div>
+                    <div class="about-content">
+                        • 新北区<br>
+                        • 天宁区<br>
+                        • 钟楼区<br>
+                        • 武进区<br>
+                        • 金坛区（部分）
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账号设置页面 - 使用新顶部栏 -->
+        <div id="page-account" class="page">
+            <div class="common-top-bar">
+                <div class="left-back-area" onclick="showPage('page-my')">
+                    <span class="back-arrow-text">←</span>
+                </div>
+                <div class="center-title-area">
+                    <span class="title-text">账号设置</span>
+                </div>
+            </div>
+            <div class="setting-card">
+                <div class="setting-title">当前账号</div>
+                <div class="user-info" style="padding:10px 0;">
+                    <div class="user-avatar" style="width:50px;height:50px;font-size:18px;">员</div>
+                    <div>
+                        <div class="user-name" style="color:#333;font-size:17px;">回收员-王师傅</div>
+                        <div class="user-id" style="color:#666;">工号：GY00123</div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-card">
+                <div class="setting-title">账号操作</div>
+                <div class="setting-item">
+                    <span>修改密码</span>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="setting-item">
+                    <span>实名认证</span>
+                    <span class="func-arrow">></span>
+                </div>
+                <div class="setting-item" style="justify-content:center;padding-top:20px;">
+                    <button class="switch-account-btn">切换账号</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关于平台页面 - 使用新顶部栏 -->
+        <div id="page-about" class="page">
+            <div class="common-top-bar">
+                <div class="left-back-area" onclick="showPage('page-my')">
+                    <span class="back-arrow-text">←</span>
+                </div>
+                <div class="center-title-area">
+                    <span class="title-text">关于平台</span>
+                </div>
+            </div>
+            <div class="about-card">
+                <div class="about-notice">
+                    <div style="font-weight:bold;color:#f57c00;margin-bottom:5px;">📢 系统公告</div>
+                    <div style="font-size:13px;line-height:1.6;">为了更好地服务市民，平台将于4月25日凌晨2:00-4:00进行系统升级，届时接单功能将短暂暂停，请各位回收员合理安排时间。</div>
+                </div>
+                <div class="setting-title">平台介绍</div>
+                <div class="about-content">
+                    <strong>绿益回收</strong> 是一家专注于城市可再生资源回收的互联网平台，致力于通过科技手段，让回收更便捷、更高效、更环保。<br><br>
+                    <strong>平台使命：</strong>让每一件废品都找到回家的路<br>
+                    <strong>平台愿景：</strong>成为全国领先的绿色回收服务品牌<br><br>
+                    <strong>版本号：</strong> v2.1.0
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="home" onclick="setBottomNav('home')">首页</div>
+        <div class="nav-item" data-page="order" onclick="setBottomNav('order')">订单</div>
+        <div class="nav-item" data-page="message" onclick="setBottomNav('message')">消息</div>
+        <div class="nav-item" data-page="my" onclick="setBottomNav('my')">我的</div>
+    </div>
+</div>
+
+<script>
+    // 聊天数据模拟
+    const chatData = {
+        '张先生': [
+            {type:'left', text:'你好，我是今天预约了纸类回收的张先生'},
+            {type:'right', text:'张师傅您好，我是绿益回收的王师傅，看到您的订单了'},
+            {type:'left', text:'你好，请问可以调整上门时间吗？'},
+            {type:'right', text:'您想调整到几点呢？'}
+        ],
+        '李女士': [
+            {type:'left', text:'你好，我是李女士'},
+            {type:'right', text:'李女士您好，我下午三点左右到您那里'},
+            {type:'left', text:'好的，回收物品已经整理好了，随时可以上门'}
+        ],
+        '平台客服': [
+            {type:'left', text:'您好，请问有什么可以帮您？'},
+            {type:'right', text:'你好，我想咨询一下今天的收益什么时候到账'}
+        ]
+    };
+
+    let currentChatUser = '';
+    let currentChatFrom = 'message'; // 记录从哪个页面进入聊天
+
+    // 在线状态切换
+    const switchBtn = document.getElementById('status-switch');
+    const statusText = document.getElementById('status-text');
+    switchBtn.onclick = function () {
+        this.classList.toggle('active');
+        if (this.classList.contains('active')) {
+            statusText.textContent = "已上线 | 正常接单";
+        } else {
+            statusText.textContent = "已下线 | 暂停接单";
+        }
+    }
+
+    // 通用页面切换
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        // 隐藏底部导航（除了首页/订单/消息/我的）
+        const bottomNav = document.querySelector('.bottom-nav');
+        const mainPages = ['page-home', 'page-order', 'page-message', 'page-my'];
+        bottomNav.style.display = mainPages.includes(pageId) ? 'flex' : 'none';
+    }
+
+    // 底部导航切换
+    function setBottomNav(nav) {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(i => i.classList.remove('active'));
+        document.querySelector(`.nav-item[data-page="${nav}"]`).classList.add('active');
+        showPage(`page-${nav}`);
+    }
+
+    // 2. 订单Tab切换
+    function switchOrderTab(tab, ele) {
+        document.querySelectorAll('#page-order .tab').forEach(t => t.classList.remove('active'));
+        ele.classList.add('active');
+
+        document.querySelectorAll('#page-order .order-list').forEach(l => l.style.display = 'none');
+        if(tab === 'all') {
+            document.getElementById('order-list-all').style.display = 'block';
+        } else if(tab === 'pending') {
+            document.getElementById('order-list-pending').style.display = 'block';
+        } else if(tab === 'ontheway') {
+            document.getElementById('order-list-ontheway').style.display = 'block';
+        } else if(tab === 'complete') {
+            document.getElementById('order-list-complete').style.display = 'block';
+        }
+    }
+
+    // 消息Tab切换
+    function switchMsgTab(tab, ele) {
+        document.querySelectorAll('#page-message .tab').forEach(t => t.classList.remove('active'));
+        ele.classList.add('active');
+
+        if(tab === 'user') {
+            document.getElementById('msg-list-user').style.display = 'block';
+            document.getElementById('msg-list-service').style.display = 'none';
+        } else {
+            document.getElementById('msg-list-user').style.display = 'none';
+            document.getElementById('msg-list-service').style.display = 'block';
+        }
+    }
+
+    // 3. 打开聊天界面
+    function openChat(userName) {
+        currentChatUser = userName;
+        document.getElementById('chat-title').textContent = userName;
+        showPage('page-chat');
+
+        const chatArea = document.getElementById('chat-area');
+        chatArea.innerHTML = '';
+        const msgs = chatData[userName] || [];
+        msgs.forEach(msg => {
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${msg.type}`;
+            bubble.textContent = msg.text;
+            chatArea.appendChild(bubble);
+        });
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    // 从聊天返回
+    function backFromChat() {
+        if(currentChatFrom === 'my') {
+            showPage('page-my');
+            currentChatFrom = 'message';
+        } else {
+            showPage('page-message');
+        }
+    }
+
+    // 发送消息
+    function sendMsg() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if(!text) return;
+
+        const chatArea = document.getElementById('chat-area');
+        const myBubble = document.createElement('div');
+        myBubble.className = 'chat-bubble right';
+        myBubble.textContent = text;
+        chatArea.appendChild(myBubble);
+        input.value = '';
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        // 模拟自动回复
+        setTimeout(() => {
+            const replyBubble = document.createElement('div');
+            replyBubble.className = 'chat-bubble left';
+            replyBubble.textContent = '好的，收到您的消息~';
+            chatArea.appendChild(replyBubble);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }, 800);
+    }
+</script>
+</body>
+</html>

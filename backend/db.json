@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "moa22340og13w45a9ar",
+      "phone": "18952235365",
+      "password": "D20070721yb",
+      "nickname": "用户5365",
+      "avatar": "/avatar/default.png",
+      "point": 0,
+      "createTime": "2026-04-22T12:55:04.512Z"
+    }
+  ],
+  "codes": {
+    "18952235365": "107897"
+  },
+  "orders": [],
+  "staff": []
+}
