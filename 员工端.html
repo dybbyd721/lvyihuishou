@@ -11,7 +11,6 @@
             box-sizing: border-box;
             font-family: "Microsoft YaHei", sans-serif;
         }
-        /* 1. 两侧收窄，竖屏样式 */
         body {
             background-color: #f0f0f0;
             display: flex;
@@ -28,7 +27,6 @@
         .page-content {
             padding-bottom: 80px;
         }
-        /* 【通用修改】所有页面顶部栏：返回按钮和文字完全分开 */
         .common-top-bar {
             background-color: #2E7D32;
             color: white;
@@ -53,14 +51,13 @@
         .center-title-area {
             flex: 1;
             text-align: center;
-            padding-right: 55px; /* 视觉居中 */
+            padding-right: 55px;
         }
         .title-text {
             font-size: 18px;
             font-weight: bold;
             color: white;
         }
-        /* 首页特殊顶部栏（无返回） */
         .home-top-bar {
             background-color: #2E7D32;
             color: white;
@@ -173,10 +170,9 @@
         }
         .tab-bar {
             background: white;
-            display: flex;
             margin: 10px;
             border-radius: 8px;
-            overflow: hidden;
+            display: flex;
         }
         .tab {
             flex: 1;
@@ -236,7 +232,6 @@
             right: 15px;
             top: 15px;
         }
-        /* 聊天界面样式 */
         .chat-container {
             background: #f5f5f5;
             min-height: 100vh;
@@ -376,7 +371,6 @@
         .func-arrow {
             color: #999;
         }
-        /* 服务范围/账号设置/关于平台 页面样式 */
         .setting-card, .about-card, .map-card {
             background: white;
             margin: 15px;
@@ -474,8 +468,6 @@
 <body>
 <div class="mobile-wrapper">
     <div class="page-content">
-
-        <!-- 首页 -->
         <div id="page-home" class="page active">
             <div class="home-top-bar">
                 <div class="status" style="display:flex;align-items:center;gap:12px;">
@@ -488,26 +480,22 @@
                     <span>🔔</span>
                 </div>
             </div>
-
             <div class="data-card">
                 <div class="data-item">
-                    <div class="data-num">¥286.5</div>
+                    <div class="data-num" id="today-income">¥155.0</div>
                     <div>今日总收入</div>
                 </div>
                 <div class="data-item">
-                    <div class="data-num">12</div>
+                    <div class="data-num" id="complete-count">1</div>
                     <div>已完成订单</div>
                 </div>
             </div>
-
             <div class="filter-bar">
                 <div class="filter-btn">🔍 筛选</div>
                 <div class="sort-btn">顺路优先 ▼</div>
                 <div class="sort-btn">🗺️ 地图视图</div>
             </div>
-
             <div class="refresh-tip">30秒自动刷新 | 下拉手动刷新</div>
-
             <div class="order-list">
                 <div class="order-card" onclick="showPage('page-order')">
                     <div class="order-tag">纸类回收</div>
@@ -517,16 +505,15 @@
                     <div class="order-money">预估收入：¥35.0</div>
                 </div>
                 <div class="order-card" onclick="showPage('page-order')">
-                    <div class="order-tag">家电回收</div>
-                    <div class="order-info">卖家：李女士 | 139****5678</div>
-                    <div class="order-info">📍 取件：常州市天宁区九洲花园</div>
-                    <div class="order-info">⏰ 时间：今天 15:00-17:00</div>
-                    <div class="order-money">预估收入：¥120.0</div>
+                    <div class="order-tag complete">已完成</div>
+                    <div class="order-info">卖家：王女士 | 135****4321</div>
+                    <div class="order-info">📍 取件：常州市钟楼区吾悦广场</div>
+                    <div class="order-info">⏰ 时间：今天 10:00-12:00</div>
+                    <div class="order-money">实际收入：¥120.0</div>
                 </div>
             </div>
         </div>
 
-        <!-- 订单页面 - 使用新顶部栏 -->
         <div id="page-order" class="page">
             <div class="common-top-bar">
                 <div class="left-back-area" onclick="showPage('page-home')">
@@ -536,14 +523,12 @@
                     <span class="title-text">我的订单</span>
                 </div>
             </div>
-
             <div class="tab-bar">
                 <div class="tab active" onclick="switchOrderTab('all', this)">全部订单</div>
                 <div class="tab" onclick="switchOrderTab('pending', this)">待接单</div>
                 <div class="tab" onclick="switchOrderTab('ontheway', this)">待上门</div>
                 <div class="tab" onclick="switchOrderTab('complete', this)">已完成</div>
             </div>
-
             <div id="order-list-all" class="order-list">
                 <div class="order-card">
                     <div class="order-tag">待上门</div>
@@ -557,16 +542,14 @@
                     <div class="order-tag complete">已完成</div>
                     <div class="order-info">卖家：王女士 | 135****4321</div>
                     <div class="order-info">📍 取件：常州市钟楼区吾悦广场</div>
-                    <div class="order-info">⏰ 时间：昨天 10:00-12:00</div>
+                    <div class="order-info">⏰ 时间：今天 10:00-12:00</div>
                     <div class="order-info">📦 品类：旧家电回收</div>
-                    <div class="order-money">实际收入：¥180.0</div>
+                    <div class="order-money">实际收入：¥120.0</div>
                 </div>
             </div>
-
             <div id="order-list-pending" class="order-list" style="display:none;">
                 <div class="empty-tip">暂时没有订单</div>
             </div>
-
             <div id="order-list-ontheway" class="order-list" style="display:none;">
                 <div class="order-card">
                     <div class="order-tag">待上门</div>
@@ -577,20 +560,18 @@
                     <div class="order-money">预估收入：¥35.0</div>
                 </div>
             </div>
-
             <div id="order-list-complete" class="order-list" style="display:none;">
                 <div class="order-card">
                     <div class="order-tag complete">已完成</div>
                     <div class="order-info">卖家：王女士 | 135****4321</div>
                     <div class="order-info">📍 取件：常州市钟楼区吾悦广场</div>
-                    <div class="order-info">⏰ 时间：昨天 10:00-12:00</div>
+                    <div class="order-info">⏰ 时间：今天 10:00-12:00</div>
                     <div class="order-info">📦 品类：旧家电回收</div>
-                    <div class="order-money">实际收入：¥180.0</div>
+                    <div class="order-money">实际收入：¥120.0</div>
                 </div>
             </div>
         </div>
 
-        <!-- 消息页面 - 使用新顶部栏 -->
         <div id="page-message" class="page">
             <div class="common-top-bar">
                 <div class="left-back-area" onclick="showPage('page-home')">
@@ -600,12 +581,10 @@
                     <span class="title-text">消息中心</span>
                 </div>
             </div>
-
             <div class="tab-bar">
                 <div class="tab active" onclick="switchMsgTab('user', this)">用户对话</div>
                 <div class="tab" onclick="switchMsgTab('service', this)">客服对话</div>
             </div>
-
             <div id="msg-list-user" class="msg-list">
                 <div class="msg-item" onclick="openChat('张先生')">
                     <div class="msg-avatar">张</div>
@@ -623,7 +602,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="msg-list-service" class="msg-list" style="display:none;">
                 <div class="msg-item" onclick="openChat('平台客服')">
                     <div class="msg-avatar">客</div>
@@ -635,7 +613,6 @@
             </div>
         </div>
 
-        <!-- 聊天界面 - 使用新顶部栏 -->
         <div id="page-chat" class="page">
             <div class="chat-container">
                 <div class="common-top-bar">
@@ -646,9 +623,7 @@
                         <span class="title-text" id="chat-title">聊天</span>
                     </div>
                 </div>
-                <div class="chat-area" id="chat-area">
-                    <!-- 聊天内容由JS动态生成 -->
-                </div>
+                <div class="chat-area" id="chat-area"></div>
                 <div class="chat-input-area">
                     <input type="text" class="chat-input" id="chat-input" placeholder="输入消息...">
                     <button class="chat-send-btn" onclick="sendMsg()">发送</button>
@@ -656,21 +631,19 @@
             </div>
         </div>
 
-        <!-- 个人中心页面 -->
         <div id="page-my" class="page">
             <div class="user-header">
                 <div class="user-info">
-                    <div class="user-avatar">员</div>
+                    <div class="user-avatar" id="staff-avatar">员</div>
                     <div>
-                        <div class="user-name">回收员-王师傅</div>
-                        <div class="user-id">工号：GY00123 | 常州专区</div>
+                        <div class="user-name" id="staff-name">回收员-管理员</div>
+                        <div class="user-id" id="staff-workid">工号：GY000 | 常州专区</div>
                     </div>
                 </div>
             </div>
-
             <div class="earn-card">
                 <div class="earn-item">
-                    <div class="earn-num">¥286.5</div>
+                    <div class="earn-num" id="my-today-income">¥155.0</div>
                     <div class="earn-text">今日收益</div>
                 </div>
                 <div class="earn-item">
@@ -678,11 +651,10 @@
                     <div class="earn-text">本周收益</div>
                 </div>
                 <div class="earn-item">
-                    <div class="earn-num">12</div>
+                    <div class="earn-num" id="my-complete-count">1</div>
                     <div class="earn-text">已完成订单</div>
                 </div>
             </div>
-
             <div class="func-list">
                 <div class="func-item" onclick="showPage('page-order'); setBottomNav('order');">
                     <div class="func-text">
@@ -722,7 +694,6 @@
             </div>
         </div>
 
-        <!-- 服务范围页面 - 使用新顶部栏 -->
         <div id="page-service-area" class="page">
             <div class="common-top-bar">
                 <div class="left-back-area" onclick="showPage('page-my')">
@@ -751,7 +722,6 @@
             </div>
         </div>
 
-        <!-- 账号设置页面 - 使用新顶部栏 -->
         <div id="page-account" class="page">
             <div class="common-top-bar">
                 <div class="left-back-area" onclick="showPage('page-my')">
@@ -764,30 +734,37 @@
             <div class="setting-card">
                 <div class="setting-title">当前账号</div>
                 <div class="user-info" style="padding:10px 0;">
-                    <div class="user-avatar" style="width:50px;height:50px;font-size:18px;">员</div>
+                    <div class="user-avatar" style="width:50px;height:50px;font-size:18px;" id="account-avatar">员</div>
                     <div>
-                        <div class="user-name" style="color:#333;font-size:17px;">回收员-王师傅</div>
-                        <div class="user-id" style="color:#666;">工号：GY00123</div>
+                        <div class="user-name" style="color:#333;font-size:17px;" id="account-name">王**</div>
+                        <div class="user-id" style="color:#666;" id="account-workid">工号：GY000</div>
                     </div>
                 </div>
             </div>
             <div class="setting-card">
-                <div class="setting-title">账号操作</div>
+                <div class="setting-title">实名认证</div>
                 <div class="setting-item">
+                    <span>真实姓名</span>
+                    <span id="real-name-view">王**</span>
+                </div>
+                <div class="setting-item">
+                    <span>身份证号</span>
+                    <span id="idcard-view">320**********1234</span>
+                </div>
+            </div>
+            <div class="setting-card">
+                <div class="setting-title">账号操作</div>
+                <div class="setting-item" onclick="location.href='forget.html'">
                     <span>修改密码</span>
                     <span class="func-arrow">></span>
                 </div>
-                <div class="setting-item">
-                    <span>实名认证</span>
+                <div class="setting-item" onclick="location.href='login.html'">
+                    <span>切换账号</span>
                     <span class="func-arrow">></span>
-                </div>
-                <div class="setting-item" style="justify-content:center;padding-top:20px;">
-                    <button class="switch-account-btn">切换账号</button>
                 </div>
             </div>
         </div>
 
-        <!-- 关于平台页面 - 使用新顶部栏 -->
         <div id="page-about" class="page">
             <div class="common-top-bar">
                 <div class="left-back-area" onclick="showPage('page-my')">
@@ -807,14 +784,12 @@
                     <strong>绿益回收</strong> 是一家专注于城市可再生资源回收的互联网平台，致力于通过科技手段，让回收更便捷、更高效、更环保。<br><br>
                     <strong>平台使命：</strong>让每一件废品都找到回家的路<br>
                     <strong>平台愿景：</strong>成为全国领先的绿色回收服务品牌<br><br>
-                    <strong>版本号：</strong> v2.1.0
+                    <strong>版本号：</strong> 测试中
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- 底部导航 -->
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home" onclick="setBottomNav('home')">首页</div>
         <div class="nav-item" data-page="order" onclick="setBottomNav('order')">订单</div>
@@ -824,7 +799,6 @@
 </div>
 
 <script>
-    // 聊天数据模拟
     const chatData = {
         '张先生': [
             {type:'left', text:'你好，我是今天预约了纸类回收的张先生'},
@@ -844,120 +818,123 @@
     };
 
     let currentChatUser = '';
-    let currentChatFrom = 'message'; // 记录从哪个页面进入聊天
+    let currentChatFrom = 'message';
 
-    // 在线状态切换
     const switchBtn = document.getElementById('status-switch');
     const statusText = document.getElementById('status-text');
     switchBtn.onclick = function () {
         this.classList.toggle('active');
-        if (this.classList.contains('active')) {
-            statusText.textContent = "已上线 | 正常接单";
-        } else {
-            statusText.textContent = "已下线 | 暂停接单";
-        }
-    }
+        statusText.textContent = this.classList.contains('active') ? "已上线 | 正常接单" : "已下线 | 暂停接单";
+    };
 
-    // 通用页面切换
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        // 隐藏底部导航（除了首页/订单/消息/我的）
-        const bottomNav = document.querySelector('.bottom-nav');
-        const mainPages = ['page-home', 'page-order', 'page-message', 'page-my'];
-        bottomNav.style.display = mainPages.includes(pageId) ? 'flex' : 'none';
+        // 👇 修复：底部导航永远显示，不再消失
+        document.querySelector('.bottom-nav').style.display = 'flex';
     }
 
-    // 底部导航切换
     function setBottomNav(nav) {
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
         document.querySelector(`.nav-item[data-page="${nav}"]`).classList.add('active');
         showPage(`page-${nav}`);
     }
 
-    // 2. 订单Tab切换
     function switchOrderTab(tab, ele) {
-        document.querySelectorAll('#page-order .tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#page-order .tab').forEach(t=>t.classList.remove('active'));
         ele.classList.add('active');
-
-        document.querySelectorAll('#page-order .order-list').forEach(l => l.style.display = 'none');
-        if(tab === 'all') {
-            document.getElementById('order-list-all').style.display = 'block';
-        } else if(tab === 'pending') {
-            document.getElementById('order-list-pending').style.display = 'block';
-        } else if(tab === 'ontheway') {
-            document.getElementById('order-list-ontheway').style.display = 'block';
-        } else if(tab === 'complete') {
-            document.getElementById('order-list-complete').style.display = 'block';
-        }
+        document.querySelectorAll('#page-order .order-list').forEach(l=>l.style.display='none');
+        const map = {
+            all: 'order-list-all',
+            pending: 'order-list-pending',
+            ontheway: 'order-list-ontheway',
+            complete: 'order-list-complete'
+        };
+        document.getElementById(map[tab]).style.display = 'block';
     }
 
-    // 消息Tab切换
     function switchMsgTab(tab, ele) {
-        document.querySelectorAll('#page-message .tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#page-message .tab').forEach(t=>t.classList.remove('active'));
         ele.classList.add('active');
-
-        if(tab === 'user') {
-            document.getElementById('msg-list-user').style.display = 'block';
-            document.getElementById('msg-list-service').style.display = 'none';
-        } else {
-            document.getElementById('msg-list-user').style.display = 'none';
-            document.getElementById('msg-list-service').style.display = 'block';
-        }
+        document.getElementById('msg-list-user').style.display = tab==='user'?'block':'none';
+        document.getElementById('msg-list-service').style.display = tab==='service'?'block':'none';
     }
 
-    // 3. 打开聊天界面
     function openChat(userName) {
         currentChatUser = userName;
         document.getElementById('chat-title').textContent = userName;
         showPage('page-chat');
-
         const chatArea = document.getElementById('chat-area');
         chatArea.innerHTML = '';
-        const msgs = chatData[userName] || [];
-        msgs.forEach(msg => {
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${msg.type}`;
-            bubble.textContent = msg.text;
-            chatArea.appendChild(bubble);
+        (chatData[userName]||[]).forEach(msg=>{
+            const b = document.createElement('div');
+            b.className = `chat-bubble ${msg.type}`;
+            b.textContent = msg.text;
+            chatArea.appendChild(b);
         });
         chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    // 从聊天返回
     function backFromChat() {
-        if(currentChatFrom === 'my') {
-            showPage('page-my');
-            currentChatFrom = 'message';
-        } else {
-            showPage('page-message');
-        }
+        showPage(currentChatFrom==='my'?'page-my':'page-message');
+        currentChatFrom = 'message';
     }
 
-    // 发送消息
     function sendMsg() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if(!text) return;
-
-        const chatArea = document.getElementById('chat-area');
-        const myBubble = document.createElement('div');
-        myBubble.className = 'chat-bubble right';
-        myBubble.textContent = text;
-        chatArea.appendChild(myBubble);
-        input.value = '';
-        chatArea.scrollTop = chatArea.scrollHeight;
-
-        // 模拟自动回复
-        setTimeout(() => {
-            const replyBubble = document.createElement('div');
-            replyBubble.className = 'chat-bubble left';
-            replyBubble.textContent = '好的，收到您的消息~';
-            chatArea.appendChild(replyBubble);
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }, 800);
+        const i = document.getElementById('chat-input');
+        const t = i.value.trim();
+        if(!t) return;
+        const ca = document.getElementById('chat-area');
+        const b = document.createElement('div');
+        b.className = 'chat-bubble right';
+        b.textContent = t;
+        ca.appendChild(b);
+        i.value='';
+        ca.scrollTop = ca.scrollHeight;
+        setTimeout(()=>{
+            const r = document.createElement('div');
+            r.className = 'chat-bubble left';
+            r.textContent = '好的，收到您的消息~';
+            ca.appendChild(r);
+            ca.scrollTop = ca.scrollHeight;
+        },800);
     }
+
+    window.onload = function(){
+        const user = JSON.parse(localStorage.getItem('currentUser')||'{}');
+        const isAdmin = (user.phone==='admin');
+        const workId = isAdmin ? 'GY000' : (user.workId ? `GY${user.workId}` : 'GY001');
+        let realName = user.realName || '王小明';
+        let idNo = user.idCard || '320402199001011234';
+
+        function maskName(n){
+            if(n.length===1) return n;
+            return n[0] + '*'.repeat(n.length-1);
+        }
+        function maskId(id){
+            if(!id || id.length < 18) return id;
+            return id.slice(0,3) + '*'.repeat(id.length - 7) + id.slice(-4);
+        }
+
+        const maskedName = maskName(realName);
+        const maskedId = maskId(idNo);
+
+        document.getElementById('staff-name').textContent = maskedName;
+        document.getElementById('staff-workid').textContent = `工号：${workId} | 常州专区`;
+        document.getElementById('staff-avatar').textContent = realName?realName[0]:'员';
+        document.getElementById('account-name').textContent = maskedName;
+        document.getElementById('account-workid').textContent = `工号：${workId}`;
+        document.getElementById('account-avatar').textContent = realName?realName[0]:'员';
+        document.getElementById('real-name-view').textContent = maskedName;
+        document.getElementById('idcard-view').textContent = maskedId;
+
+        const todayTotal = 120+35;
+        const completeNum = 1;
+        document.getElementById('today-income').textContent = `¥${todayTotal}.0`;
+        document.getElementById('complete-count').textContent = completeNum;
+        document.getElementById('my-today-income').textContent = `¥${todayTotal}.0`;
+        document.getElementById('my-complete-count').textContent = completeNum;
+    };
 </script>
 </body>
 </html>
