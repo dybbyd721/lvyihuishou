@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>消息中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #eef5e8;
+            font-family: 'Segoe UI', 'Poppins', Roboto, system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            padding-bottom: 70px;
+        }
+
+        .top-bar {
+            background: linear-gradient(135deg, #3c9e3a, #2c7a2a);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .container {
+            padding: 16px 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #2c7a2a;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            padding-left: 4px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e2f0da;
+        }
+        .card-title {
+            padding: 18px 22px;
+            font-size: 16px;
+            color: #2f5430;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        .card-title::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-right: 2px solid #4cae4c;
+            border-bottom: 2px solid #4cae4c;
+            transform: rotate(-45deg);
+            transition: transform 0.2s;
+        }
+        .card.open .card-title::after {
+            transform: rotate(45deg);
+        }
+
+        .card-content {
+            display: none;
+            padding: 0 22px 18px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .card.open .card-content {
+            display: block;
+        }
+        .time {
+            font-size: 12px;
+            color: #9bbc89;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .chat-box {
+            margin-top: 10px;
+        }
+        .chat-item {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+        .chat-me {
+            justify-content: flex-end;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+        }
+        .avatar.service {
+            background-color: #4cae4c;
+        }
+        .avatar.staff {
+            background-color: #FF9800;
+        }
+        .avatar.me {
+            background-color: #3c9e3a;
+            margin-left: 8px;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .bubble.service {
+            background: #f5fbf0;
+            color: #2f5430;
+            margin-left: 10px;
+            border: 1px solid #e2f0da;
+        }
+        .bubble.staff {
+            background: #fff9f0;
+            color: #333;
+            margin-left: 10px;
+        }
+        .bubble.me {
+            background: #3c9e3a;
+            color: #fff;
+            margin-right: 10px;
+            text-align: right;
+        }
+
+        .input-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 60px;
+            background: #fff;
+            border-top: 1px solid #e2f0da;
+            padding: 10px 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        .input-bar.show {
+            display: flex;
+        }
+        #msgInput {
+            flex: 1;
+            height: 42px;
+            border: 1px solid #cbe2bd;
+            border-radius: 21px;
+            padding: 0 18px;
+            font-size: 14px;
+            background: #fafef5;
+            outline: none;
+        }
+        #sendBtn {
+            height: 42px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 21px;
+            background: #4cae4c;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 底部导航栏 —— 与个人中心完全一致 */
+        .bottom-tab-bar {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 18px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+            border-top: 1px solid #e2f0da;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: #92b282;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+            text-decoration: none;
+        }
+        .tab-item i {
+            font-size: 1.4rem;
+        }
+        .tab-item.active {
+            color: #3c9e3a;
+            font-weight: 600;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="top-bar">消息中心</div>
+<div class="container">
+    <div class="section-title">系统提醒</div>
+    <div class="card" data-type="system">
+        <div class="card-title">账号安全提醒</div>
+        <div class="card-content">
+            您的账号于今日10:23在新设备登录，如非本人操作请及时修改密码。
+            <div class="time">今天 10:23</div>
+        </div>
+    </div>
+    <div class="card" data-type="system">
+        <div class="card-title">回收订单通知</div>
+        <div class="card-content">
+            您的预约回收订单已确认，回收员将在1小时内联系您。
+            <div class="time">昨天 15:30</div>
+        </div>
+    </div>
+    <div class="card" data-type="system">
+        <div class="card-title">积分收入提醒</div>
+        <div class="card-content">
+            您的回收物品已完成验收，本次获得**86绿益积分**，已存入您的账户，可在积分商城兑换礼品。
+            <div class="time">今天 09:40</div>
+        </div>
+    </div>
+
+    <div class="section-title">订单对话</div>
+    <div class="card" id="orderChat" data-type="chat">
+        <div class="card-title">订单接取临时对话</div>
+        <div class="card-content">
+            <div class="chat-box" id="orderChatBox">
+                <div class="chat-item">
+                    <div class="avatar staff">员</div>
+                    <div class="bubble staff">您好，我已接取您的回收订单，马上上门~</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">客服沟通</div>
+    <div class="card" id="serviceCard" data-type="chat">
+        <div class="card-title">在线客服</div>
+        <div class="card-content">
+            <div class="chat-box" id="chatBox">
+                <div class="chat-item">
+                    <div class="avatar service">客</div>
+                    <div class="bubble service">您好，绿益回收客服为您服务~</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="input-bar" id="inputBar">
+    <input type="text" id="msgInput" placeholder="请输入消息...">
+    <button id="sendBtn">发送</button>
+</div>
+
+<!-- 底部导航（和个人中心完全一样） -->
+<div class="bottom-tab-bar">
+    <div class="tab-item" data-tab="home" onclick="location.href='index.html'">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+    </div>
+    <div class="tab-item" data-tab="points">
+        <i class="fas fa-coins"></i>
+        <span>积分</span>
+    </div>
+    <div class="tab-item active" data-tab="message">
+        <i class="fas fa-comment-dots"></i>
+        <span>消息</span>
+    </div>
+    <div class="tab-item" data-tab="profile" onclick="location.href='绿益回收.html'">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+    </div>
+</div>
+
+<script>
+    let currentChat = 'service';
+    const inputBar = document.getElementById('inputBar');
+    const msgInput = document.getElementById('msgInput');
+
+    document.querySelectorAll('.card-title').forEach(title => {
+        title.addEventListener('click', () => {
+            const card = title.closest('.card');
+            const type = card.dataset.type;
+            card.classList.toggle('open');
+
+            // 只有聊天类才显示输入框，系统提醒不显示
+            if(type === 'chat'){
+                if(card.id === 'orderChat'){
+                    currentChat = 'order';
+                    document.getElementById('serviceCard').classList.remove('open');
+                }
+                if(card.id === 'serviceCard'){
+                    currentChat = 'service';
+                    document.getElementById('orderChat').classList.remove('open');
+                }
+                inputBar.classList.toggle('show', card.classList.contains('open'));
+            } else {
+                // 系统提醒：关闭输入框
+                inputBar.classList.remove('show');
+            }
+            msgInput.value = '';
+        });
+    });
+
+    const chatBox = document.getElementById('chatBox');
+    const orderChatBox = document.getElementById('orderChatBox');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function sendMsg(){
+        const txt = msgInput.value.trim();
+        if(!txt) return;
+
+        if(currentChat === 'order'){
+            orderChatBox.innerHTML += `
+            <div class="chat-item chat-me">
+                <div class="bubble me">${txt}</div>
+                <div class="avatar me">我</div>
+            </div>`;
+            msgInput.value = '';
+            setTimeout(() => {
+                orderChatBox.innerHTML += `
+                <div class="chat-item">
+                    <div class="avatar staff">员</div>
+                    <div class="bubble staff">收到，我尽快到达，请您稍等！</div>
+                </div>`;
+            }, 800);
+        } else {
+            chatBox.innerHTML += `
+            <div class="chat-item chat-me">
+                <div class="bubble me">${txt}</div>
+                <div class="avatar me">我</div>
+            </div>`;
+            msgInput.value = '';
+            setTimeout(() => {
+                chatBox.innerHTML += `
+                <div class="chat-item">
+                    <div class="avatar service">客</div>
+                    <div class="bubble service">已收到您的消息，我们会尽快回复您！</div>
+                </div>`;
+            }, 800);
+        }
+    }
+
+    sendBtn.onclick = sendMsg;
+    msgInput.addEventListener('keypress', e => {
+        if(e.key === 'Enter') sendMsg();
+    });
+</script>
+</body>
+</html>
